@@ -10,6 +10,7 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 | :---: | :---: | :---: | :--- | :---: | :---: | :--- |
 | **#1** | `v1.0` | 2026-09-15 | Clúster 4 casillas de Zanahorias continuas + DROP en `(4,4)` | $5,458 | 347 (bajó de 600) | **Superado**: Rival acumuló más dinero ($8k-$12k). |
 | **#2** | `v2.0` | 2026-09-15 | Rotación Híbrida: 2 Melones ($1,500/cosecha) + 2 Zanahorias | $10,540 | *En calibración* | **En evaluación**: +188% sobre línea base (pico $12.7k). |
+| **#3** | `v3.0` | 2026-09-15 | Escalamiento Laboral (2 Peones) + Clúster 9 tiles (4 Melones + 5 Zanahorias) | $16,795 | *Pendiente Envío* | **Listo para Envío**: Multiplica capacidad operativa 3x. |
 
 ---
 
@@ -61,7 +62,32 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 
 ---
 
-## 🔮 Banco de Ideas para Futuros Envíos (v3.0, v4.0)
+### 📦 Envío #3: FarmBrain v3.0 — "Industrial Multi-Worker Scaling"
+* **Fecha:** 2026-09-15
+* **Código base:** `submission.py` (FarmBrainV3)
+* **Hipótesis:**
+  - En lugar de limitarse a 1 trabajador (24 acciones/día), contratar **2 peones diarios (`HIRE`)** cuesta una miseria ($1 + $1 = $2/día) debido a la progresión Fibonacci del coste de contratación diario.
+  - Esto triplica la capacidad operativa a **72 acciones de unidades por día**.
+  - Con 3 trabajadores coordinados mediante reserva de objetivos (`claimed_targets`), podemos expandir el cultivo a un **clúster denso de 9 casillas** adyacente al cobertizo:
+    - **4 casillas dedicadas a Melones**: `[(3, 4), (4, 3), (3, 3), (2, 4)]` en dos tandas masivas (Días 0-12 y Días 12-24), generando hasta 48 melones = **$12,000+ en ingresos de melón**.
+    - **5 casillas dedicadas a Zanahorias**: `[(4, 4), (4, 2), (2, 3), (3, 2), (2, 2)]` produciendo un flujo ininterrumpido de liquidez rápida para semillas y salarios.
+  - Gestión integral de mochilas: los trabajadores descargan en `(4, 4)` tan pronto como tienen cosechas y no hay tareas urgentes.
+* **Mecánicas aplicadas:**
+  - Contratación: Hasta 2 peones por día hasta el día 25.
+  - Coordinación: Despacho greedy con prevención de colisiones (`claimed_targets` por turno).
+  - Parada de siembra: Día 26.
+  - Cosecha y liquidación total asegurada antes del turno 720.
+* **Resultados en Pruebas Locales (Arena):**
+  - Tasa de victoria vs. `starter`: 100% (10/10).
+  - Puntuación promedio: **$16,794.90** (Rival: $3,442.50).
+  - Puntuación máxima: **$17,733.00**.
+  - Margen de ventaja: **+$13,352.40**.
+* **Objetivo de este envío:**
+  - Romper los $16,000 en Kaggle y catapultar el ranking competitivo a los puestos más altos de la tabla.
+
+---
+
+## 🔮 Banco de Ideas para Futuros Envíos (v4.0, v5.0)
 
 Para los próximos intentos diarios, considerar:
 
