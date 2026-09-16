@@ -36,16 +36,25 @@ def agent(obs, config=None):
             if qty > 0:
                 market_orders.append(["SELL", item, qty])
 
-        # 2. Market Phase: Keep Carrot Seeds Stocked (Target: 4 seeds)
-        carrot_seeds = seeds.get("CARROT", 0)
-        seed_cost = 20
-        if day <= 26 and carrot_seeds < 4 and farm.get("money", 0) >= seed_cost:
-            needed = min(4 - carrot_seeds, int(farm["money"] // seed_cost))
-            if needed > 0:
-                market_orders.append(["BUY_SEED", "CARROT", needed])
+        # 2. Market Phase: Smart Seed Buying
+        m_seeds = seeds.get("MELON", 0)
+        c_seeds = seeds.get("CARROT", 0)
+        money = farm.get("money", 0)
+
+        want_melons = (day <= 2 or 12 <= day <= 14) and m_seeds < 2
+        if want_melons and money >= 80:
+            needed_melons = min(2 - m_seeds, int(money // 80))
+            if needed_melons > 0:
+                market_orders.append(["BUY_SEED", "MELON", needed_melons])
+
+        if day <= 26 and c_seeds < 3 and money >= 20:
+            needed_carrots = min(3 - c_seeds, int(money // 20))
+            if needed_carrots > 0:
+                market_orders.append(["BUY_SEED", "CARROT", needed_carrots])
 
         market_orders = market_orders[:10]
         cluster = [(4, 4), (3, 4), (4, 3), (3, 3)]
+        melon_slots = [(3, 4), (4, 3)]
         shed_access = (4, 4)
         carrying_items = any(qty > 0 for qty in inv.values())
 
@@ -62,14 +71,18 @@ def agent(obs, config=None):
                     crop = t.get("crop", "CARROT")
                     age = day - t.get("planted_day", 0)
                     yield_units = t.get("yield_units", 0)
-                    if age >= 3 and yield_units > 0:
+                    max_age = 12 if crop == "MELON" else 3
+                    if age >= max_age and yield_units > 0:
                         return {"farmer": ["HARVEST"], "hands": [], "market": market_orders}
                     elif not t.get("watered_today", False) and day <= 28:
                         return {"farmer": ["WATER"], "hands": [], "market": market_orders}
                 elif kind == "WEED":
                     return {"farmer": ["DIG"], "hands": [], "market": market_orders}
-            elif t is None and carrot_seeds > 0 and day <= 26 and (fx, fy) in cluster:
-                return {"farmer": ["PLANT", "CARROT"], "hands": [], "market": market_orders}
+            elif t is None and (fx, fy) in cluster:
+                if (fx, fy) in melon_slots and m_seeds > 0 and (day <= 2 or 12 <= day <= 14):
+                    return {"farmer": ["PLANT", "MELON"], "hands": [], "market": market_orders}
+                elif c_seeds > 0 and day <= 26:
+                    return {"farmer": ["PLANT", "CARROT"], "hands": [], "market": market_orders}
 
         # 5. Cluster Work Scheduling
         needed_tasks = []
@@ -80,16 +93,21 @@ def agent(obs, config=None):
             if isinstance(ct, dict):
                 k = ct.get("kind")
                 if k == "PLANT":
+                    crop = ct.get("crop", "CARROT")
                     age = day - ct.get("planted_day", 0)
                     yield_units = ct.get("yield_units", 0)
-                    if age >= 3 and yield_units > 0:
+                    max_age = 12 if crop == "MELON" else 3
+                    if age >= max_age and yield_units > 0:
                         needed_tasks.append(((cx, cy), 1))
                     elif not ct.get("watered_today", False) and day <= 28:
                         needed_tasks.append(((cx, cy), 2))
                 elif k == "WEED":
                     needed_tasks.append(((cx, cy), 3))
-            elif ct is None and carrot_seeds > 0 and day <= 26:
-                needed_tasks.append(((cx, cy), 4))
+            elif ct is None and day <= 26:
+                if (cx, cy) in melon_slots and m_seeds > 0 and (day <= 2 or 12 <= day <= 14):
+                    needed_tasks.append(((cx, cy), 4))
+                elif c_seeds > 0:
+                    needed_tasks.append(((cx, cy), 4))
 
         # 6. Navigation
         def _step_direction(current, target):

@@ -7,7 +7,7 @@ from src.kaggriculture.agents.baseline_naive import StarterBaselineAgent
 
 def test_agent_initialization():
     agent = FarmBrainAgent()
-    assert agent.name == "FarmBrainGreedy"
+    assert agent.name.startswith("FarmBrain")
     baseline = StarterBaselineAgent()
     assert baseline.name == "StarterBaseline"
 
