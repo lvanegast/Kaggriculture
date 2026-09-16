@@ -9,7 +9,7 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 | Envío # | Versión | Fecha | Estrategia Principal | Score Local (Prom.) | Rating Kaggle | Estado / Resultado |
 | :---: | :---: | :---: | :--- | :---: | :---: | :--- |
 | **#1** | `v1.0` | 2026-09-15 | Clúster 4 casillas de Zanahorias continuas + DROP en `(4,4)` | $5,458 | 347 (bajó de 600) | **Superado**: Rival acumuló más dinero ($8k-$12k). |
-| **#2** | `v2.0` | 2026-09-15 | Rotación Híbrida: 2 Melones ($1,500/cosecha) + 2 Zanahorias | $10,540 | *En calibración* | **En evaluación**: +188% sobre línea base (pico $12.7k). |
+| **#2** | `v2.0` | 2026-09-15 | Rotación Híbrida: 2 Melones ($1,500/cosecha) + 2 Zanahorias | $10,540 | 447 (+100 vs v1) | **Mejora clara**: +100 puntos en el ladder, pero insuficiente vs bots >$15k. |
 | **#3** | `v3.0` | 2026-09-15 | Escalamiento Laboral (2 Peones) + Clúster 9 tiles (4 Melones + 5 Zanahorias) | $16,795 | *Pendiente Envío* | **Listo para Envío**: Multiplica capacidad operativa 3x. |
 
 ---
@@ -56,9 +56,11 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
   - Puntuación promedio: **$10,540.00** (Rival: $3,655.70).
   - Puntuación máxima: **$12,771.00**.
 * **Desempeño en Kaggle:**
-  - *En evaluación por los servidores de emparejamiento.*
-* **Objetivo de este envío:**
-  - Romper la barrera de los $10,000 de capital y revertir la racha inicial, escalando hacia el top del ranking.
+  - Rating inicial: 600.
+  - Rating resultante: **447** (subió **+100 puntos** frente al 347 del bot v1.0).
+* **Lección Aprendida:**
+  > [!NOTE]
+  > El salto de $5.4k a $10.5k le otorgó de inmediato +100 puntos de rating. Sin embargo, en el ladder competitivo los rivales del rango 600-800+ están haciendo entre **$14,000 y $18,000**, por lo que un bot con 1 solo trabajador y solo 2 melones se queda corto en turnos/acciones para superar a la mitad alta. La solución obligatoria es el escalamiento laboral multi-peón (v3.0).
 
 ---
 
