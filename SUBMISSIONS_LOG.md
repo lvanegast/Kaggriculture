@@ -11,7 +11,8 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 | **#1** | `v1.0` | 2026-09-15 | Clúster 4 casillas de Zanahorias continuas + DROP en `(4,4)` | $5,458 | 347 (bajó de 600) | **Superado**: Rival acumuló más dinero ($8k-$12k). |
 | **#2** | `v2.0` | 2026-09-15 | Rotación Híbrida: 2 Melones ($1,500/cosecha) + 2 Zanahorias | $10,540 | 447 (+100 vs v1) | **Mejora clara**: +100 puntos en el ladder, pero insuficiente vs bots >$15k. |
 | **#3** | `v3.0` | 2026-09-15 | Escalamiento Laboral (2 Peones) + Clúster 9 tiles (4 Melones + 5 Zanahorias) | $16,795 | *En evaluación* | **Enviado**: Multiplica capacidad operativa 3x. Esperando Elo. |
-| **#4** | `v4.0` | 2026-09-15 | Mega-Clúster 14 Melones + 4 Zanahorias + 2 Peones (19 tiles cuadrante 0) | $33,768 | *Pendiente Envío* | **Listo para Envío**: Pico de $35,823 (+101% vs v3). |
+| **#4** | `v4.0` | 2026-09-15 | Mega-Clúster 14 Melones + 4 Zanahorias + 2 Peones (19 tiles cuadrante 0) | $33,768 | 456 (provisional) | **En evaluación**: Entró en 600, calibrando en el ladder. |
+| **#5** | `v5.0` | 2026-09-15 | FarmBrain Apex: Liquidación Prioritaria + Evacuación Día 29 + 14 Melones | $33,768 | *Pendiente Envío* | **Listo para Envío**: Pico de $36,084. Último intento del día. |
 
 ---
 
@@ -109,7 +110,24 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 
 ---
 
-## 🔮 Banco de Ideas para Futuros Envíos (v5.0)
+### 📦 Envío #5: FarmBrain v5.0 — "Apex: Value-Priority Liquidation & Day 29 Evacuation"
+* **Fecha:** 2026-09-15
+* **Código base:** [`submission_v5_apex.py`](file:///C:/Proyectos/Kaggriculture/submission_v5_apex.py) / [`submission.py`](file:///C:/Proyectos/Kaggriculture/submission.py)
+* **Hipótesis:**
+  - **Liquidación por Prioridad de Rentabilidad**: En lugar de iterar el cobertizo en orden arbitrario, forzar la venta en orden de mayor valor por unidad: `MELON` ($250) primero, luego `STRAWBERRY` ($120), `TOMATO` ($60), `CARROT` ($35) y `WHEAT` ($25). Esto garantiza que los fondos de alto volumen ingresen en el primer turno de procesamiento de mercado.
+  - **Protocolo de Cierre Absoluto (Día 29)**: En las últimas 24 horas (turnos 696 a 719), cualquier peón o granjero que lleve productos en la mochila abandona cualquier tarea secundaria y camina directamente a `(4, 4)` a soltar la cosecha (`["DROP"]`). En ese mismo turno, el mercado liquida todo el cobertizo, asegurando que **cero unidades de hortalizas queden atrapadas en mochilas al terminar el turno 720**.
+  - **Clúster de Máximo Rendimiento**: 14 Melones en dos tandas masivas + 4 Zanahorias de liquidez continua en Cuadrante 0.
+* **Resultados en Pruebas Locales (Arena - 10 partidas):**
+  - Tasa de victoria vs. `starter`: 100% (10/10).
+  - Puntuación promedio: **$33,768.30** (Rival: $3,444.80).
+  - Puntuación máxima verificada: **$36,084.00**.
+  - Margen de ventaja: **+$30,323.50**.
+* **Objetivo de este envío:**
+  - Maximizar hasta el último dólar con liquidación perfecta al cierre de temporada, coronando el 5º y último envío del día.
+
+---
+
+## 🔮 Banco de Ideas para Futuros Envíos (Día 2 en adelante)
 
 Para los próximos intentos diarios, considerar:
 

@@ -33,8 +33,9 @@ def agent(obs, config=None):
 
         market_orders = []
 
-        # 1. Market Phase: Liquidate Shed Produce
-        for item, qty in shed.items():
+        # 1. Market Phase: Liquidate Shed Produce by Value Priority
+        for item in ["MELON", "STRAWBERRY", "TOMATO", "CARROT", "WHEAT"]:
+            qty = shed.get(item, 0)
             if qty > 0:
                 market_orders.append(["SELL", item, qty])
 
@@ -149,6 +150,11 @@ def agent(obs, config=None):
                         needed.append(((cx, cy), 4))
                     elif c_seeds > 0:
                         needed.append(((cx, cy), 4))
+
+            # Day 29 Emergency Evacuation: drop all backpack items to maximize final money
+            if day >= 29 and has_items:
+                tx, ty = shed_access
+                return [_step_direction((wx, wy), (tx, ty))]
 
             if needed:
                 needed.sort(key=lambda item: (item[1], abs(wx - item[0][0]) + abs(wy - item[0][1])))

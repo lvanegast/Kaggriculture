@@ -19,9 +19,9 @@ from src.kaggriculture.agents.base import BaseAgent
 
 
 class FarmBrainAgent(BaseAgent):
-    """Mega-Cluster multi-worker competitive agent for Kaggriculture (FarmBrain v4.0)."""
+    """Apex multi-worker competitive agent for Kaggriculture (FarmBrain v5.0)."""
 
-    def __init__(self, name: str = "FarmBrainV4") -> None:
+    def __init__(self, name: str = "FarmBrainV5") -> None:
         super().__init__(name=name)
         self.shed_access: Tuple[int, int] = (4, 4)
         # 14 high-density melon slots surrounding shed access (4,4)
@@ -58,8 +58,9 @@ class FarmBrainAgent(BaseAgent):
 
             market_orders: List[List[Any]] = []
 
-            # 1. Market Phase: Liquidate Shed Produce
-            for item, qty in shed.items():
+            # 1. Market Phase: Liquidate Shed Produce by Value Priority
+            for item in ["MELON", "STRAWBERRY", "TOMATO", "CARROT", "WHEAT"]:
+                qty = shed.get(item, 0)
                 if qty > 0:
                     market_orders.append(["SELL", item, qty])
 
@@ -147,6 +148,11 @@ class FarmBrainAgent(BaseAgent):
                             needed.append(((cx, cy), 4))  # Priority 4: Plant Melon
                         elif c_seeds > 0:
                             needed.append(((cx, cy), 4))  # Priority 4: Plant Carrot
+
+                # Day 29 Emergency Evacuation: drop all backpack items to maximize final money
+                if day >= 29 and has_items:
+                    tx, ty = self.shed_access
+                    return [self._step_direction((wx, wy), (tx, ty))], (tx, ty)
 
                 if needed:
                     needed.sort(key=lambda item: (item[1], abs(wx - item[0][0]) + abs(wy - item[0][1])))
