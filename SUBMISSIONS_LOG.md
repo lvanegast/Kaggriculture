@@ -10,7 +10,8 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 | :---: | :---: | :---: | :--- | :---: | :---: | :--- |
 | **#1** | `v1.0` | 2026-09-15 | Clúster 4 casillas de Zanahorias continuas + DROP en `(4,4)` | $5,458 | 347 (bajó de 600) | **Superado**: Rival acumuló más dinero ($8k-$12k). |
 | **#2** | `v2.0` | 2026-09-15 | Rotación Híbrida: 2 Melones ($1,500/cosecha) + 2 Zanahorias | $10,540 | 447 (+100 vs v1) | **Mejora clara**: +100 puntos en el ladder, pero insuficiente vs bots >$15k. |
-| **#3** | `v3.0` | 2026-09-15 | Escalamiento Laboral (2 Peones) + Clúster 9 tiles (4 Melones + 5 Zanahorias) | $16,795 | *Pendiente Envío* | **Listo para Envío**: Multiplica capacidad operativa 3x. |
+| **#3** | `v3.0` | 2026-09-15 | Escalamiento Laboral (2 Peones) + Clúster 9 tiles (4 Melones + 5 Zanahorias) | $16,795 | *En evaluación* | **Enviado**: Multiplica capacidad operativa 3x. Esperando Elo. |
+| **#4** | `v4.0` | 2026-09-15 | Mega-Clúster 14 Melones + 4 Zanahorias + 2 Peones (19 tiles cuadrante 0) | $33,768 | *Pendiente Envío* | **Listo para Envío**: Pico de $35,823 (+101% vs v3). |
 
 ---
 
@@ -89,7 +90,26 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 
 ---
 
-## 🔮 Banco de Ideas para Futuros Envíos (v4.0, v5.0)
+### 📦 Envío #4: FarmBrain v4.0 — "Mega-Cluster 14 Melones + 4 Zanahorias"
+* **Fecha:** 2026-09-15
+* **Código base:** [`submission_v4_megacluster.py`](file:///C:/Proyectos/Kaggriculture/submission_v4_megacluster.py) / [`submission.py`](file:///C:/Proyectos/Kaggriculture/submission.py)
+* **Hipótesis:**
+  - El análisis minucioso del motor de simulación reveló que en Kaggriculture, el precio base del melón es **$250** (con multiplicador cuadrático hacia abajo solo si se supera $I_0 = 10,000$). Vender hasta 84 melones por lote apenas deprime el precio a ~$200.
+  - Al contar con 3 trabajadores (Granjero + 2 Peones = 72 acciones/día), se pueden atender sin esfuerzo hasta **18-19 casillas cultivadas** en el Cuadrante 0 sin pagar los $1,000 de expansión de tierra.
+  - **14 Casillas dedicadas a Melones**: Dos tandas masivas (Días 0-12 y Días 12-24). Cada tanda genera 14 x 6 = **84 melones**, produciendo ~$17,000 por lote (~$34,000 en total solo de melones).
+  - **4 Casillas de Zanahorias fijas**: Proporcionan liquidez continua ($140 cada 3 días) para financiar los $2/día de peones y asegurar que nunca falte saldo para re-siembras.
+  - Prevención de colisiones distribuida (`claimed_targets`) para que los 3 trabajadores se repartan el trabajo de riego y cosecha sin solaparse.
+* **Resultados en Pruebas Locales (Arena - 10 partidas):**
+  - Tasa de victoria vs. `starter`: 100% (10/10).
+  - Puntuación promedio: **$33,768.50** (Rival: $3,444.80).
+  - Puntuación máxima (Pico): **$35,823.00**.
+  - Margen de ventaja: **+$30,323.70**.
+* **Objetivo de este envío:**
+  - Duplicar de golpe el rendimiento de la v3.0 ($16.8k -> $33.8k) y competir de lleno en el Top Tier del Leaderboard global.
+
+---
+
+## 🔮 Banco de Ideas para Futuros Envíos (v5.0)
 
 Para los próximos intentos diarios, considerar:
 

@@ -39,30 +39,39 @@ def agent(obs, config=None):
                 market_orders.append(["SELL", item, qty])
 
         # 2. Market Phase: Labor Scaling (Hire up to 2 hands per day)
-        if day <= 25 and len(hands_pos) < 2 and money >= 20:
+        if day <= 25 and len(hands_pos) < 2 and money >= 25:
             market_orders.append(["HIRE"])
 
-        # 3. Market Phase: Seed Purchasing
+        # 3. Market Phase: Mega Seed Purchasing
         m_seeds = seeds.get("MELON", 0)
         c_seeds = seeds.get("CARROT", 0)
 
-        want_melons = (day <= 2 or 12 <= day <= 14) and m_seeds < 4
+        # Melon batches: Batch 1 (Days 0-2), Batch 2 (Days 12-14)
+        want_melons = (day <= 2 or 12 <= day <= 14) and m_seeds < 14
         if want_melons and money >= 80:
-            needed_melons = min(4 - m_seeds, int(money // 80))
+            needed_melons = min(14 - m_seeds, int(money // 80))
             if needed_melons > 0:
                 market_orders.append(["BUY_SEED", "MELON", needed_melons])
 
-        if day <= 26 and c_seeds < 6 and money >= 20:
-            needed_carrots = min(6 - c_seeds, int(money // 20))
+        if day <= 26 and c_seeds < 4 and money >= 20:
+            needed_carrots = min(4 - c_seeds, int(money // 20))
             if needed_carrots > 0:
                 market_orders.append(["BUY_SEED", "CARROT", needed_carrots])
 
         market_orders = market_orders[:10]
 
         shed_access = (4, 4)
-        melon_slots = [(3, 4), (4, 3), (3, 3), (2, 4)]
+        # 14 high-density melon slots surrounding shed access (4,4)
+        melon_slots = [
+            (3, 4), (4, 3), (3, 3), (2, 4), (4, 2), (2, 3), (3, 2), (2, 2),
+            (1, 4), (4, 1), (1, 3), (3, 1), (1, 2), (2, 1)
+        ]
+        # 14 melon slots + 4 carrot slots + shed tile (19 tiles total in Quadrant 0)
         cluster = [
-            (4, 4), (3, 4), (4, 3), (3, 3), (2, 4), (4, 2), (2, 3), (3, 2), (2, 2)
+            (4, 4),
+            (3, 4), (4, 3), (3, 3), (2, 4), (4, 2), (2, 3), (3, 2), (2, 2),
+            (1, 4), (4, 1), (1, 3), (3, 1), (1, 2), (2, 1),
+            (0, 4), (4, 0), (0, 3), (3, 0)
         ]
 
         def _step_direction(current, target):
