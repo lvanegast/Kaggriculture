@@ -1,0 +1,21 @@
+[project]
+name = "kaggriculture"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "kaggle-environments>=1.32.7",
+    "numpy>=2.5.3",
+    "pandas>=3.0.5",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "rich>=15.0.0",
+    "scipy>=1.18.1",
+    "tqdm>=4.70.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
