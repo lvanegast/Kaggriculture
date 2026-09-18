@@ -8,132 +8,78 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 
 | Envío # | Versión | Fecha | Estrategia Principal | Score Local (Prom.) | Rating Kaggle | Estado / Resultado |
 | :---: | :---: | :---: | :--- | :---: | :---: | :--- |
-| **#1** | `v1.0` | 2026-09-15 | Clúster 4 casillas de Zanahorias continuas + DROP en `(4,4)` | $5,458 | 347 (bajó de 600) | **Superado**: Rival acumuló más dinero ($8k-$12k). |
-| **#2** | `v2.0` | 2026-09-15 | Rotación Híbrida: 2 Melones ($1,500/cosecha) + 2 Zanahorias | $10,540 | 447 (+100 vs v1) | **Mejora clara**: +100 puntos en el ladder, pero insuficiente vs bots >$15k. |
-| **#3** | `v3.0` | 2026-09-15 | Escalamiento Laboral (2 Peones) + Clúster 9 tiles (4 Melones + 5 Zanahorias) | $16,795 | *En evaluación* | **Enviado**: Multiplica capacidad operativa 3x. Esperando Elo. |
-| **#4** | `v4.0` | 2026-09-15 | Mega-Clúster 14 Melones + 4 Zanahorias + 2 Peones (19 tiles cuadrante 0) | $33,768 | 456 (provisional) | **En evaluación**: Entró en 600, calibrando en el ladder. |
-| **#5** | `v5.0` | 2026-09-15 | FarmBrain Apex: Liquidación Prioritaria + Evacuación Día 29 + 14 Melones | $33,768 | *Pendiente Envío* | **Listo para Envío**: Pico de $36,084. Último intento del día. |
+| **#1** | `v1.0` | 2026-09-15 | Clúster 4 casillas de Zanahorias continuas + DROP en `(4,4)` | $5,458 | **343** | **Superado**: Techo de ganancias bajo vs bots de alto margen. |
+| **#2** | `v2.0` | 2026-09-15 | Rotación Híbrida: 2 Melones ($1,500/cosecha) + 2 Zanahorias | $10,540 | **182** | **Superado**: Insuficiente escala laboral frente al ladder. |
+| **#3** | `v3.0` | 2026-09-15 | Escalamiento Laboral (2 Peones) + Clúster 9 tiles (4 Melones + 5 Zanahorias) | $16,795 | Evaluado en v4 | **Paso intermedio**: Multiplicó capacidad operativa a 72 acc/día. |
+| **#4** | `v4.0` | 2026-09-15 | Mega-Clúster 14 Melones + 4 Zanahorias + 2 Peones (19 tiles cuadrante 0) | $33,768 (vs starter) | **400** | **Trampa de Saturación**: Explicada abajo en lección de mercado. |
+| **#5** | `v5.0` | 2026-09-15 | FarmBrain Apex: Liquidación Prioritaria + Evacuación Día 29 + 14 Melones | $33,768 (vs starter) | **331** | **Trampa de Saturación**: Colapso de precio del melón ante rivales. |
+| **#6** | `v6.0` | 2026-09-17 | **Anti-Crash Balanced Portfolio** (8 Melones + 4 Fresas + 4 Zanahorias + 2 Peones) | $28,599 | *Listo para subir* | **Gana +$3.2k vs v4** en duelos directos; resistente al colapso de mercado. |
+| **#7** | `v7.0` | 2026-09-17 | **Dynamic Opponent Profiler** (Pivote en tiempo real según siembra rival) | $33,913 | *Listo para subir* | **Gana +$5.1k vs v4** en duelos directos; explota monopolio si rival es pasivo. |
+| **#8** | `v8.0` | 2026-09-17 | **Quad-Labor Industrial Engine** (3 Peones = 96 acc/día; 12M + 4S + 4C) | $35,491 | *Listo para subir* | **Gana +$10,012 vs v4** en duelos directos; aplastante dominio físico y comercial. |
+| **#9** | `v9.0` | 2026-09-17 | **Adaptive Quad-Labor Engine** (3 Peones + Detección de Melones Rivales) | $32,574 | *Listo para subir* | **Gana +$13,824 vs v4** (reduce a v4 a solo $8,863). |
+| **#10** | `v10.0`| 2026-09-17 | **Grandmaster Apex** (Quad-Labor + Profiler + Zero-Waste End-Game Cutoffs) | $32,923 | *Listo para subir* | **Gana +$13,561 vs v4**; evacuación 100% limpia el Día 29. |
 
 ---
 
-## 🔍 Detalle de Estrategias
+## 🔬 Descubrimiento Crítico: "La Trampa del Melón" (The Melon Rush Trap)
 
-### 📦 Envío #1: FarmBrain v1.0 — "Pure Carrot Cluster"
-* **Fecha:** 2026-09-15
-* **Código base:** Commit `4b02a70`
-* **Hipótesis:** 
-  - Cultivar un bloque cerrado de 4 casillas adyacentes al cobertizo `[(4,4), (3,4), (4,3), (3,3)]` exclusivamente con zanahorias (ciclo corto de 3 días) para eliminar costos de viaje.
-  - Descargar automáticamente al cobertizo (`DROP`) y vender de inmediato.
-* **Mecánicas aplicadas:**
-  - Siembra: 100% Zanahorias.
-  - Gestión de inventario: Descarga al cobertizo en `(4, 4)` cuando lleva hortalizas en la mochila.
-  - Parada de fin de temporada: Detener siembras el día 26 y vender todo.
-* **Resultados en Pruebas Locales (Arena):**
-  - Tasa de victoria vs. `starter`: 100% (10/10).
-  - Puntuación promedio: **$5,458.70** (Rival: $3,601.90).
-* **Desempeño en Kaggle:**
-  - Rating inicial: 600.
-  - Rating resultante: **347** tras las primeras 2-3 partidas.
-* **Lección Aprendida / Qué NO Repetir:**
-  > [!WARNING]
-  > **Techo de ingresos bajo:** La zanahoria genera un flujo de caja rápido y seguro ($120 netos cada 3 días), pero tiene un techo máximo de ~$5,500 en la temporada completa. Los competidores reales en Kaggle están usando cultivos de alto margen (como melones o árboles) que alcanzan $8,000 - $12,000+. Un bot que solo siembre zanahorias siempre perderá contra oponentes de mitad o tabla alta.
+Tras inspeccionar el código fuente del simulador (`kaggriculture.py`) se descubrió la causa exacta de por qué **v4 (400)** y **v5 (331)** cayeron en el ladder de Kaggle a pesar de lograr $34k localmente contra el Starter:
 
----
+1. **La Fórmula Cuadrática de Castigo de Precios:**
+   ```python
+   MARKET_PARAMS["MELON"] = {
+       "base": 250, "I0": 10000, "T": 300, 
+       "below_func": "log", "above_func": "sq", "above_target": 3.60
+   }
+   ```
+   - El precio del melón por encima del inventario base ($I_0 = 10,000$) cae con una función **cuadrática (`sq`)**.
+   - Con tan solo **158 melones de exceso** vendidos en todo el mercado, el precio del melón se desploma de **$250 a $1.00** (el precio mínimo absoluto).
+2. **Ninguna Tienda del Pueblo Consume Melones:**
+   - En `kaggriculture.py`, las tiendas (*Smoothie Shop*, *Ice Cream Shop*, *Brunch Spot*, *Bakery*, *Pet Cafe*, *Farmers Market*) consumen hortalizas cada 4 turnos (`townShopSellInterval = 4`).
+   - **¡Ninguna tienda del pueblo compra melones!** Solo el *Town Center* consume 1 mísero melón cada 24 turnos (1 melón al día). En una partida de 30 días, el pueblo solo absorbe 30 melones en total.
+3. **El Efecto en el Ladder de Kaggle:**
+   - En el ladder de Kaggle, otros competidores también siembran melones.
+   - Cuando ambos jugadores cosechan y venden 70-80 melones en los Días 12 y 24, el mercado se inunda instantáneamente con más de 150 melones.
+   - El precio del melón cae a $1.00. Un bot puramente melonero (como v4 o v5) pasa de ganar $34,000 a ganar solo **$14,000 - $16,000**, empatando o perdiendo frente a cualquier bot diversificado.
 
-### 📦 Envío #2: FarmBrain v2.0 — "Hybrid Melon + Carrot Engine"
-* **Fecha:** 2026-09-15
-* **Código base:** Commit `095c388`
-* **Hipótesis:**
-  - El **Melón (`MELON`)** tiene el multiplicador de beneficio más alto del juego: una semilla de $80 rinde 6 melones a $250 base = **$1,500 en efectivo por cosecha**.
-  - Reservar 2 casillas fijas `(3, 4)` y `(4, 3)` para dos tandas de melones (Días 0-12 y Días 12-24) aporta **+$6,000 directos** de beneficio limpio.
-  - En las otras 2 casillas `(4, 4)` y `(3, 3)`, mantener la rotación rápida de zanahorias para financiar los costos operativos y abastecer tiendas del pueblo.
-* **Mecánicas aplicadas:**
-  - Lote 1 de Melones: Días 0 al 2 (cosecha el día 12).
-  - Lote 2 de Melones: Días 12 al 14 (cosecha el día 24-25).
-  - Zanahorias continuas: Días 0 al 26 en slots secundarios.
-  - Parada de siembra: Día 26.
-  - Descarga automática al cobertizo y liquidación total.
-* **Resultados en Pruebas Locales (Arena):**
-  - Tasa de victoria vs. `starter`: 100% (10/10).
-  - Puntuación promedio: **$10,540.00** (Rival: $3,655.70).
-  - Puntuación máxima: **$12,771.00**.
-* **Desempeño en Kaggle:**
-  - Rating inicial: 600.
-  - Rating resultante: **447** (subió **+100 puntos** frente al 347 del bot v1.0).
-* **Lección Aprendida:**
-  > [!NOTE]
-  > El salto de $5.4k a $10.5k le otorgó de inmediato +100 puntos de rating. Sin embargo, en el ladder competitivo los rivales del rango 600-800+ están haciendo entre **$14,000 y $18,000**, por lo que un bot con 1 solo trabajador y solo 2 melones se queda corto en turnos/acciones para superar a la mitad alta. La solución obligatoria es el escalamiento laboral multi-peón (v3.0).
+### La Solución Ganadora: Fresa (`STRAWBERRY`) + Cuádruple Fuerza Laboral
+1. **Fresas Continuas (`ongoing: True`):**
+   - Se plantan en los Días 0-2 (semilla $100).
+   - Tienen su primera cosecha el Día 10, y a partir de ahí **producen 4 fresas cada 2 días hasta el final de la temporada SIN costo de re-siembra**.
+   - 4 plantas de fresa producen hasta 160 fresas a lo largo de la partida.
+   - **4 Tiendas del Pueblo consumen fresas cada 4 turnos**: *Smoothie Shop*, *Ice Cream Shop*, *Brunch Spot*, *Farmers Market*. La demanda constante drena el inventario y mantiene el precio alto.
+2. **Escalamiento a 3 Peones (4 Trabajadores = 96 acciones/día):**
+   - El 3er peón cuesta solo $2/día (sucesión de Fibonacci).
+   - Con 4 trabajadores coordinados, atendemos 20 casillas agrícolas alrededor del cobertizo sin ningún cuello de botella.
+   - En duelo directo contra un bot de melones puros (v4), nuestra estrategia lo destruye por un margen de **+$10,000 a +$13,800**.
 
 ---
 
-### 📦 Envío #3: FarmBrain v3.0 — "Industrial Multi-Worker Scaling"
-* **Fecha:** 2026-09-15
-* **Código base:** `submission.py` (FarmBrainV3)
-* **Hipótesis:**
-  - En lugar de limitarse a 1 trabajador (24 acciones/día), contratar **2 peones diarios (`HIRE`)** cuesta una miseria ($1 + $1 = $2/día) debido a la progresión Fibonacci del coste de contratación diario.
-  - Esto triplica la capacidad operativa a **72 acciones de unidades por día**.
-  - Con 3 trabajadores coordinados mediante reserva de objetivos (`claimed_targets`), podemos expandir el cultivo a un **clúster denso de 9 casillas** adyacente al cobertizo:
-    - **4 casillas dedicadas a Melones**: `[(3, 4), (4, 3), (3, 3), (2, 4)]` en dos tandas masivas (Días 0-12 y Días 12-24), generando hasta 48 melones = **$12,000+ en ingresos de melón**.
-    - **5 casillas dedicadas a Zanahorias**: `[(4, 4), (4, 2), (2, 3), (3, 2), (2, 2)]` produciendo un flujo ininterrumpido de liquidez rápida para semillas y salarios.
-  - Gestión integral de mochilas: los trabajadores descargan en `(4, 4)` tan pronto como tienen cosechas y no hay tareas urgentes.
-* **Mecánicas aplicadas:**
-  - Contratación: Hasta 2 peones por día hasta el día 25.
-  - Coordinación: Despacho greedy con prevención de colisiones (`claimed_targets` por turno).
-  - Parada de siembra: Día 26.
-  - Cosecha y liquidación total asegurada antes del turno 720.
-* **Resultados en Pruebas Locales (Arena):**
-  - Tasa de victoria vs. `starter`: 100% (10/10).
-  - Puntuación promedio: **$16,794.90** (Rival: $3,442.50).
-  - Puntuación máxima: **$17,733.00**.
-  - Margen de ventaja: **+$13,352.40**.
-* **Objetivo de este envío:**
-  - Romper los $16,000 en Kaggle y catapultar el ranking competitivo a los puestos más altos de la tabla.
+## 📁 Archivos Generados y Listos para los 5 Envíos de Hoy
 
----
+Todos los archivos han sido verificados contra el motor de simulación oficial de Kaggle (`kaggle_environments`) y están listos en la raíz del proyecto:
 
-### 📦 Envío #4: FarmBrain v4.0 — "Mega-Cluster 14 Melones + 4 Zanahorias"
-* **Fecha:** 2026-09-15
-* **Código base:** [`submission_v4_megacluster.py`](file:///C:/Proyectos/Kaggriculture/submission_v4_megacluster.py) / [`submission.py`](file:///C:/Proyectos/Kaggriculture/submission.py)
-* **Hipótesis:**
-  - El análisis minucioso del motor de simulación reveló que en Kaggriculture, el precio base del melón es **$250** (con multiplicador cuadrático hacia abajo solo si se supera $I_0 = 10,000$). Vender hasta 84 melones por lote apenas deprime el precio a ~$200.
-  - Al contar con 3 trabajadores (Granjero + 2 Peones = 72 acciones/día), se pueden atender sin esfuerzo hasta **18-19 casillas cultivadas** en el Cuadrante 0 sin pagar los $1,000 de expansión de tierra.
-  - **14 Casillas dedicadas a Melones**: Dos tandas masivas (Días 0-12 y Días 12-24). Cada tanda genera 14 x 6 = **84 melones**, produciendo ~$17,000 por lote (~$34,000 en total solo de melones).
-  - **4 Casillas de Zanahorias fijas**: Proporcionan liquidez continua ($140 cada 3 días) para financiar los $2/día de peones y asegurar que nunca falte saldo para re-siembras.
-  - Prevención de colisiones distribuida (`claimed_targets`) para que los 3 trabajadores se repartan el trabajo de riego y cosecha sin solaparse.
-* **Resultados en Pruebas Locales (Arena - 10 partidas):**
-  - Tasa de victoria vs. `starter`: 100% (10/10).
-  - Puntuación promedio: **$33,768.50** (Rival: $3,444.80).
-  - Puntuación máxima (Pico): **$35,823.00**.
-  - Margen de ventaja: **+$30,323.70**.
-* **Objetivo de este envío:**
-  - Duplicar de golpe el rendimiento de la v3.0 ($16.8k -> $33.8k) y competir de lleno en el Top Tier del Leaderboard global.
+### 1. Envío #6: [`submission_v6_balanced.py`](file:///C:/Proyectos/Kaggriculture/submission_v6_balanced.py)
+* **Estrategia:** Cartera Balanceada Inmune al Crash (8 Melones + 4 Fresas continuas + 4 Zanahorias + 2 Peones).
+* **Score vs Starter:** $28,599.00
+* **Duelo vs v4:** Gana por **+$3,244.00** ($20,113 vs $16,869).
 
----
+### 2. Envío #7: [`submission_v7_adaptive.py`](file:///C:/Proyectos/Kaggriculture/submission_v7_adaptive.py)
+* **Estrategia:** Perfilado de Oponente en Tiempo Real. Si el rival siembra melones, activa el escudo anti-crash (8M, 4S, 4C). Si el rival es pasivo, monopoliza melones (14M, 4C).
+* **Score vs Starter:** $33,913.00
+* **Duelo vs v4:** Gana por **+$5,109.00** ($21,634 vs $16,525).
 
-### 📦 Envío #5: FarmBrain v5.0 — "Apex: Value-Priority Liquidation & Day 29 Evacuation"
-* **Fecha:** 2026-09-15
-* **Código base:** [`submission_v5_apex.py`](file:///C:/Proyectos/Kaggriculture/submission_v5_apex.py) / [`submission.py`](file:///C:/Proyectos/Kaggriculture/submission.py)
-* **Hipótesis:**
-  - **Liquidación por Prioridad de Rentabilidad**: En lugar de iterar el cobertizo en orden arbitrario, forzar la venta en orden de mayor valor por unidad: `MELON` ($250) primero, luego `STRAWBERRY` ($120), `TOMATO` ($60), `CARROT` ($35) y `WHEAT` ($25). Esto garantiza que los fondos de alto volumen ingresen en el primer turno de procesamiento de mercado.
-  - **Protocolo de Cierre Absoluto (Día 29)**: En las últimas 24 horas (turnos 696 a 719), cualquier peón o granjero que lleve productos en la mochila abandona cualquier tarea secundaria y camina directamente a `(4, 4)` a soltar la cosecha (`["DROP"]`). En ese mismo turno, el mercado liquida todo el cobertizo, asegurando que **cero unidades de hortalizas queden atrapadas en mochilas al terminar el turno 720**.
-  - **Clúster de Máximo Rendimiento**: 14 Melones en dos tandas masivas + 4 Zanahorias de liquidez continua en Cuadrante 0.
-* **Resultados en Pruebas Locales (Arena - 10 partidas):**
-  - Tasa de victoria vs. `starter`: 100% (10/10).
-  - Puntuación promedio: **$33,768.30** (Rival: $3,444.80).
-  - Puntuación máxima verificada: **$36,084.00**.
-  - Margen de ventaja: **+$30,323.50**.
-* **Objetivo de este envío:**
-  - Maximizar hasta el último dólar con liquidación perfecta al cierre de temporada, coronando el 5º y último envío del día.
+### 3. Envío #8: [`submission_v8_expanded_labor.py`](file:///C:/Proyectos/Kaggriculture/submission_v8_expanded_labor.py)
+* **Estrategia:** Motor Industrial Cuádruple (3 Peones = 96 acc/día; 12 Melones + 4 Fresas + 4 Zanahorias en 20 parcelas).
+* **Score vs Starter:** $35,491.00
+* **Duelo vs v4:** Gana por **+$10,012.00** ($23,568 vs $13,556).
 
----
+### 4. Envío #9: [`submission_v9_adaptive_quad.py`](file:///C:/Proyectos/Kaggriculture/submission_v9_adaptive_quad.py)
+* **Estrategia:** Cuádruple Laboral Adaptativa (3 Peones + Detección de Oponente). Si el rival rushea melones, despliega 12M + 4S + 4C. Si es pasivo, expande a 16M + 4C.
+* **Score vs Starter:** $32,574.00
+* **Duelo vs v4:** Gana por **+$13,824.00** (hunde a v4 a solo $8,863).
 
-## 🔮 Banco de Ideas para Futuros Envíos (Día 2 en adelante)
-
-Para los próximos intentos diarios, considerar:
-
-1. **Aprovechamiento de Fertilizante (`FERTILIZER`)**:
-   - Comprar fertilizante cuando el dinero supere $4,000 para duplicar unidades en casillas clave.
-2. **Sincronización con Tiendas del Pueblo (`Town Shops Arbitrage`)**:
-   - Monitorear `obs["town"]["unlocked_shops"]` (ej. *Farmers Market*, *Pet Cafe*, *Smoothie Shop*). Si una tienda consume zanahorias o melones, vender con sobreprecio.
-3. **Expansión de Cuadrante (`BUY_LAND`)**:
-   - Cuando el capital supere $6,000, comprar el cuadrante Noreste (cuadrante 1) y contratar un operario (`HIRE`) que cuesta solo $1 para operar 4 casillas adicionales.
+### 5. Envío #10: [`submission_v10_apex.py`](file:///C:/Proyectos/Kaggriculture/submission_v10_apex.py)
+* **Estrategia:** Grandmaster Apex. La culminación de todas las mecánicas: 4 Trabajadores + Perfilador Adaptativo + Cortes estrictos de compra en Días 14/26 para eliminar pérdidas + Evacuación de mochilas el Día 29.
+* **Score vs Starter:** $32,923.00
+* **Duelo vs v4:** Gana por **+$13,561.00** ($23,393 vs $9,832 tanto de P0 como de P1).
