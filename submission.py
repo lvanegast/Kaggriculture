@@ -28,24 +28,11 @@ def agent(obs, config=None):
         f_inv = inventories[0] if inventories else {}
         money = farm.get("money", 0)
 
-        # 1. Opponent Profiling
-        opp_farm = farms[opp_player] if len(farms) > opp_player else {}
-        opp_tiles = opp_farm.get("tiles", [])
-        opp_melons = 0
-        for row in opp_tiles:
-            for t in row:
-                if isinstance(t, dict) and t.get("crop") == "MELON":
-                    opp_melons += 1
-
-        # Dynamic Strategy Selection
-        if opp_melons >= 4:
-            num_melons = 12
-            num_strawberries = 4
-            num_carrots = 4
-        else:
-            num_melons = 16
-            num_strawberries = 0
-            num_carrots = 4
+        # Robust Guaranteed Portfolio: 4 Permanent Strawberries + 12 Melons + 4 Carrots
+        # Strawberries guarantee steady high-margin revenue from 4 Town Shops, making us immune to melon crashes
+        num_melons = 12
+        num_strawberries = 4
+        num_carrots = 4
 
         market_orders = []
 
