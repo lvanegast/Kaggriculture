@@ -14,10 +14,11 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 | **#4** | `v4.0` | 2026-09-15 | Mega-Clúster 14 Melones + 4 Zanahorias + 2 Peones (19 tiles cuadrante 0) | $33,768 (vs starter) | **400** | **Trampa de Saturación**: Explicada abajo en lección de mercado. |
 | **#5** | `v5.0` | 2026-09-15 | FarmBrain Apex: Liquidación Prioritaria + Evacuación Día 29 + 14 Melones | $33,768 (vs starter) | **331** | **Trampa de Saturación**: Colapso de precio del melón ante rivales. |
 | **#6** | `v6.0` | 2026-09-17 | **Anti-Crash Balanced Portfolio** (8 Melones + 4 Fresas + 4 Zanahorias + 2 Peones) | $28,599 | *Listo para subir* | **Gana +$3.2k vs v4** en duelos directos; resistente al colapso de mercado. |
-| **#7** | `v7.0` | 2026-09-17 | **Dynamic Opponent Profiler** (Pivote en tiempo real según siembra rival) | $33,913 | *Listo para subir* | **Gana +$5.1k vs v4** en duelos directos; explota monopolio si rival es pasivo. |
-| **#8** | `v8.0` | 2026-09-17 | **Quad-Labor Industrial Engine** (3 Peones = 96 acc/día; 12M + 4S + 4C) | $35,491 | *Listo para subir* | **Gana +$10,012 vs v4** en duelos directos; aplastante dominio físico y comercial. |
-| **#9** | `v9.0` | 2026-09-17 | **Adaptive Quad-Labor Engine** (3 Peones + Detección de Melones Rivales) | $32,574 | *Listo para subir* | **Gana +$13,824 vs v4** (reduce a v4 a solo $8,863). |
-| **#10** | `v10.0`| 2026-09-17 | **Grandmaster Apex** (Quad-Labor + Profiler + Zero-Waste End-Game Cutoffs) | $32,923 | *Listo para subir* | **Gana +$13,561 vs v4**; evacuación 100% limpia el Día 29. |
+| **#7** | `v7.0` | 2026-09-17 | **Dynamic Opponent Profiler** (Pivote en tiempo real según siembra rival) | $33,913 | **431** | **Máximo Score Histórico**: Superó a v4 (400) y v5 (331). |
+| **#8** | `v8.0` | 2026-09-17 | **Quad-Labor Industrial Engine** (3 Peones = 96 acc/día; 12M + 4S + 4C) | $35,491 | Evaluado | Congestión por 4 trabajadores en cuadrante 0. |
+| **#9** | `v9.0` | 2026-09-17 | **Adaptive Quad-Labor Engine** (3 Peones + Detección de Melones Rivales) | $32,574 | Evaluado | Versión experimental. |
+| **#10** | `v10.0`| 2026-09-17 | **Grandmaster Apex** (Quad-Labor + Profiler + Zero-Waste End-Game Cutoffs) | $32,923 | Evaluado | Versión experimental. |
+| **#11** | `v11.0`| 2026-09-20 | **FarmBrain v11 Apex Master**: Evolución directa de v7 (2 Peones, Zero-Waste Cutoff, Evacuación Día 29) | $34,021 | *Listo para subir* | **Gana +$3,000 vs v7** en duelos directos; conserva el ratio laboral óptimo de 431 Elo. |
 
 ---
 
