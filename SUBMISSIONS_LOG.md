@@ -84,3 +84,29 @@ Todos los archivos han sido verificados contra el motor de simulación oficial d
 * **Estrategia:** Grandmaster Apex. La culminación de todas las mecánicas: 4 Trabajadores + Perfilador Adaptativo + Cortes estrictos de compra en Días 14/26 para eliminar pérdidas + Evacuación de mochilas el Día 29.
 * **Score vs Starter:** $32,923.00
 * **Duelo vs v4:** Gana por **+$13,561.00** ($23,393 vs $9,832 tanto de P0 como de P1).
+
+### 6. Envío #11: [`submission_v11_apex_master.py`](file:///C:/Proyectos/Kaggriculture/submission_v11_apex_master.py)
+* **Estrategia:** Optimización estricta de v7 (431 Elo). 2 peones (cero congestión en cobertizo NW) + cortes de semilla (Día 14 melones, Día 25 zanahorias) + evacuación total de inventarios el Día 29.
+* **Score vs Starter:** $34,021.00
+* **Duelo vs v7 (431 Elo):** Supera a v7 por **+$3,000**.
+
+---
+
+## 🏆 Gran Hito de Ruptura: Expansión de Terreno + Ganadería (Versión 12)
+
+A partir de la observación de las partidas perdidas en Kaggle donde los rivales expandían el terreno y colocaban vacas y pasto cerca del cobertizo, se descubrió la arquitectura ganadera óptima:
+
+### 7. Envío #12: [`submission_v12_ranch_apex.py`](file:///C:/Proyectos/Kaggriculture/submission_v12_ranch_apex.py) ⭐ (RECOMENDADO PARA SUBIR)
+* **Estrategia:** Ranch Hybrid Master (Expansión NE + 2 Vacas al lado del cobertizo + Cultivos NW).
+* **Mecánica:**
+  1. **Día 0:** Desbloquea cuadrante NE ($1,000), construye 2 pastos en `(5,4)` y `(5,3)` inmediatamente adyacentes a la puerta NE del cobertizo. Compra 2 Vacas ($800), compra trigo del mercado ($25/u), y siembra 8 melones + 8 zanahorias en NW.
+  2. **Doble Motor Económico Inmune a la Saturación:**
+     - **Cuadrante NE (Ganadería):** 2 Vacas producen LECHE ($160 base, consumida por 3 tiendas: Pizza, Smoothie, Ice Cream) y FERTILIZANTE ($100 base) a diario. ¡Las vacas NO requieren riego! Solo 12 turnos matutinos para alimentarlas con trigo del mercado.
+     - **Cuadrante NW (Agricultura):** Clúster intensivo de melones y zanahorias cuidado por 2 peones agrícolas.
+  3. **Tarde:** Tras atender las vacas en la mañana, el granjero regresa al cuadrante NW para ayudar a regar y cosechar los melones.
+* **Duelo vs v11 Apex:**
+  - P0: **$31,323.00** vs $21,630.00 (Ventaja: **+$9,693.00**)
+  - P1: **$31,932.00** vs $21,606.00 (Ventaja: **+$10,326.00**)
+* **Duelo vs v7 (431 Elo):**
+  - **$34,716.00** vs $20,719.00 (Ventaja descomunal: **+$13,997.00** / +67% más dinero).
+
