@@ -96,7 +96,7 @@ Todos los archivos han sido verificados contra el motor de simulación oficial d
 
 A partir de la observación de las partidas perdidas en Kaggle donde los rivales expandían el terreno y colocaban vacas y pasto cerca del cobertizo, se descubrió la arquitectura ganadera óptima:
 
-### 7. Envío #12: [`submission_v12_ranch_apex.py`](file:///C:/Proyectos/Kaggriculture/submission_v12_ranch_apex.py) ⭐ (RECOMENDADO PARA SUBIR)
+### 7. Envío #12: [`submission_v12_ranch_apex.py`](file:///C:/Proyectos/Kaggriculture/submission_v12_ranch_apex.py)
 * **Estrategia:** Ranch Hybrid Master (Expansión NE + 2 Vacas al lado del cobertizo + Cultivos NW).
 * **Mecánica:**
   1. **Día 0:** Desbloquea cuadrante NE ($1,000), construye 2 pastos en `(5,4)` y `(5,3)` inmediatamente adyacentes a la puerta NE del cobertizo. Compra 2 Vacas ($800), compra trigo del mercado ($25/u), y siembra 8 melones + 8 zanahorias en NW.
@@ -104,9 +104,33 @@ A partir de la observación de las partidas perdidas en Kaggle donde los rivales
      - **Cuadrante NE (Ganadería):** 2 Vacas producen LECHE ($160 base, consumida por 3 tiendas: Pizza, Smoothie, Ice Cream) y FERTILIZANTE ($100 base) a diario. ¡Las vacas NO requieren riego! Solo 12 turnos matutinos para alimentarlas con trigo del mercado.
      - **Cuadrante NW (Agricultura):** Clúster intensivo de melones y zanahorias cuidado por 2 peones agrícolas.
   3. **Tarde:** Tras atender las vacas en la mañana, el granjero regresa al cuadrante NW para ayudar a regar y cosechar los melones.
+* **Resultado en Kaggle:** **Superó los 500 Elo en vivo**.
 * **Duelo vs v11 Apex:**
   - P0: **$31,323.00** vs $21,630.00 (Ventaja: **+$9,693.00**)
   - P1: **$31,932.00** vs $21,606.00 (Ventaja: **+$10,326.00**)
 * **Duelo vs v7 (431 Elo):**
   - **$34,716.00** vs $20,719.00 (Ventaja descomunal: **+$13,997.00** / +67% más dinero).
+
+---
+
+## 🚀 Dominio Total: Triple Ganadería + Fuerza de Trabajo Cuádruple (Versión 13)
+
+### 8. Envío #13: [`submission_v13_ranch_titan.py`](file:///C:/Proyectos/Kaggriculture/submission_v13_ranch_titan.py) 👑 (NUEVO REY / RECOMENDADO PARA SUBIR)
+* **Estrategia:** Ranch Titan (Expansión NE + 3 Vacas trianguladas en el cobertizo + Escala a 3 Peones + 12 Melones).
+* **Innovaciones frente a v12:**
+  1. **Triple Vaca en Triángulo en Puerta NE:**
+     - Pasto 1 en `(5,4)` (puerta directa del cobertizo).
+     - Pasto 2 en `(5,3)` (1 paso al Norte).
+     - Pasto 3 en `(6,4)` (1 paso al Este).
+     - Las 3 vacas están a solo 1 paso de la puerta. Se alimentan en un solo barrido matutino con 3 unidades de trigo.
+     - Producen **3 Leches cada 2 días** + **3 Fertilizantes al día** (~108 leches + 84 fertilizantes en la partida).
+  2. **Escala Laboral a 3 Peones (4 Trabajadores = 96 acciones/día):**
+     - Al entrar los ingresos de zanahorias y fertilizante, escala a 3 peones dedicados en NW.
+  3. **Clúster Agrícola Expandido:**
+     - 12 Melones simultáneos en NW con riego diario garantizado al 100%.
+* **Score Máximo vs Starter:** **$55,589.00** (rompe el récord de $51,000 de los bots top de Kaggle).
+* **Duelos Directos vs v12 Ranch Apex (>500 Elo):**
+  - **Match 1 (P0):** v13 **$43,337.00** vs v12 $32,491.00 (Ventaja: **+$10,846.00**)
+  - **Match 2 (P1):** v13 **$44,846.00** vs v12 $33,803.00 (Ventaja: **+$11,043.00**)
+
 
