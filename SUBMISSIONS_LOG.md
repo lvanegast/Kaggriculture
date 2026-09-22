@@ -133,4 +133,23 @@ A partir de la observación de las partidas perdidas en Kaggle donde los rivales
   - **Match 1 (P0):** v13 **$43,337.00** vs v12 $32,491.00 (Ventaja: **+$10,846.00**)
   - **Match 2 (P1):** v13 **$44,846.00** vs v12 $33,803.00 (Ventaja: **+$11,043.00**)
 
+---
+
+## ⚡ El Nuevo Ápice Absoluto: Ranch Colossus (Versión 14)
+
+### 9. Envío #14: [`submission_v14_ranch_colossus.py`](file:///C:/Proyectos/Kaggriculture/submission_v14_ranch_colossus.py) 👑👑 (MÁXIMO PODER / RECOMENDADO PARA SUBIR)
+* **Estrategia:** Ranch Colossus (Optimización de Capital Inicial: 8 Melones Día 0 + 2 Vacas Día 0 + 3ª Vaca el Día 3-4).
+* **El Descubrimiento Matemático:**
+  - En la v13 gastábamos $1,200 en 3 vacas el Día 0, lo que dejaba dinero solo para 4 melones el Día 0.
+  - La 3ª vaca **no da leche los primeros 8 días**, por lo que comprarla el Día 0 retrasaba los melones.
+  - En la **v14**, compramos **8 Melones el Día 0** + 2 Vacas. El Día 12 cosechamos 48 unidades de melón (+**$12,000** de golpe).
+  - La 3ª vaca se compra el **Día 3-4** con la liquidez de las primeras zanahorias, entrando en producción de leche casi al mismo tiempo sin comprometer la ola de melones.
+* **Score Máximo vs Starter:** **$60,217.00** (¡primer bot en superar los $60,000!).
+* **Duelos Directos vs v12 Ranch Apex (actual en Kaggle):**
+  - **Match 1 (P0):** v14 **$44,483.00** vs v12 $30,507.00 (Ventaja: **+$13,976.00**)
+  - **Match 2 (P1):** v14 **$45,721.00** vs v12 $31,291.00 (Ventaja: **+$14,430.00**)
+* **Duelos Directos vs v13 Titan:**
+  - Gana en ambos roles por **+$875.00** adicionales.
+
+
 
