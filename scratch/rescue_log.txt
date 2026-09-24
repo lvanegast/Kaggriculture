@@ -1,0 +1,8 @@
+Before Step 192: Farmer=['FEED'], shed_cow=2, inv_cow=None
+--> Overriding step 192 to PICKUP COW 2!
+After Step 192: Farmer=['PICKUP', 'COW', 2]
+Before Step 193: Farmer=['PICKUP', 'WHEAT', 2], shed_cow=1, inv_cow=2
+After Step 193: Farmer=['PICKUP', 'WHEAT', 2]
+Before Step 194: Farmer=['EAST'], shed_cow=1, inv_cow=2
+After Step 194: Farmer=['EAST']
+Final rewards: P0=32186.0, P1=32186.0
