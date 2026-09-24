@@ -23,7 +23,7 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 | **#13** | `v13.0`| 2026-09-20 | **Ranch Titan**: Expansión NE + 3 Vacas trianguladas + 3 Peones | $44,846 | **472** | **Pico Histórico**: Logró el mayor Elo hasta la fecha (472). |
 | **#14** | `v14.0`| 2026-09-21 | **Ranch Colossus**: 8 Melones Día 0 + Vaca tardía condicionada | $45,721 | **391** | **Fragilidad**: El retraso condicional de la 3ª vaca fue vulnerable al dumping. |
 | **#15** | `v15.0`| 2026-09-22 | **Premium Titan (Grandmaster Sparse Router)**: Motor de campeonato extraído de investigación top (10 Peones, Reordenamiento de Impacto de Mercado, Ovejas/Vacas, Enrutador adaptativo de tiendas) | **$164,691** | **1042** | **¡HITO HISTÓRICO!** Rompió la barrera de 1000 Elo en Kaggle. |
-| **#16** | `v16.0`| 2026-09-23 | **Apex Titan (Capital Guard & Zero-Waste Sweeper)**: Resuelve divergencias de compra de vacas en pasos 94-96 y barre excedentes de fresas/fertilizante en pasos 718-719 | **$111,968** (Seed 42) / Prom. $82,231 | *Validado* | **SUPERIOR A V15**: +$6,700 en torneo multi-seed, vence a v15 en duelos directos. |
+| **#16** | `v16.0`| 2026-09-23 | **Apex Titan (Capital Guard & Zero-Waste Sweeper)**: Resuelve divergencias de compra de vacas en pasos 94-96 y barre excedentes de fresas/fertilizante en pasos 718-719 | **$111,968** (Seed 42) / Prom. $82,231 | **1118** | **¡NUEVO RÉCORD SUPREMO!** +76 puntos sobre v15; escalada al top del leaderboard. |
 | **#17** | `v17.0`| 2026-09-24 | **Apex Colossus (Pure Simulator Protocol & Opportunistic Controller)**: Motor v16 pulido con eliminación de acciones ilegales, DIG oportunista para unidades inactivas, Capital Guard y Zero-Waste Sweeper | **$111,968** (Seed 42) / Prom. $82,094 | **Listo para subir** | **100% Win-Rate vs v14, v12, v10** (+100k margin) y victoria sobre v15 (+912 margin). |
 
 ---
@@ -210,6 +210,7 @@ A partir de la observación de las partidas perdidas en Kaggle donde los rivales
   - **Semilla 42:** Salta de $46,601 a **$111,968** (+**$65,367** de ganancia neta).
   - **Promedio 10 Semillas:** Pasa de $75,393 a **$82,093.6** (+**$6,700** de ventaja promedio).
   - **Duelo Directo v16 vs v15:** La v16 vence o empata a la v15 en todas las semillas evaluadas, superándola por hasta +$8,195 por partida.
+  - **Resultado en Kaggle:** **1118 Elo en vivo** (+76 puntos sobre v15, récord supremo histórico del equipo).
 
 ---
 
