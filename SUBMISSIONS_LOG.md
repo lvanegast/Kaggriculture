@@ -23,7 +23,8 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 | **#13** | `v13.0`| 2026-09-20 | **Ranch Titan**: Expansión NE + 3 Vacas trianguladas + 3 Peones | $44,846 | **472** | **Pico Histórico**: Logró el mayor Elo hasta la fecha (472). |
 | **#14** | `v14.0`| 2026-09-21 | **Ranch Colossus**: 8 Melones Día 0 + Vaca tardía condicionada | $45,721 | **391** | **Fragilidad**: El retraso condicional de la 3ª vaca fue vulnerable al dumping. |
 | **#15** | `v15.0`| 2026-09-22 | **Premium Titan (Grandmaster Sparse Router)**: Motor de campeonato extraído de investigación top (10 Peones, Reordenamiento de Impacto de Mercado, Ovejas/Vacas, Enrutador adaptativo de tiendas) | **$164,691** | **1042** | **¡HITO HISTÓRICO!** Rompió la barrera de 1000 Elo en Kaggle. |
-| **#16** | `v16.0`| 2026-09-23 | **Apex Titan (Capital Guard & Zero-Waste Sweeper)**: Resuelve divergencias de compra de vacas en pasos 94-96 y barre excedentes de fresas/fertilizante en pasos 718-719 | **$111,968** (Seed 42) / Prom. $82,231 | *Listo para subir* | **SUPERIOR A V15**: +$6,500 en torneo multi-seed, vence a v15 en duelos directos. |
+| **#16** | `v16.0`| 2026-09-23 | **Apex Titan (Capital Guard & Zero-Waste Sweeper)**: Resuelve divergencias de compra de vacas en pasos 94-96 y barre excedentes de fresas/fertilizante en pasos 718-719 | **$111,968** (Seed 42) / Prom. $82,231 | *Validado* | **SUPERIOR A V15**: +$6,700 en torneo multi-seed, vence a v15 en duelos directos. |
+| **#17** | `v17.0`| 2026-09-24 | **Apex Colossus (Pure Simulator Protocol & Opportunistic Controller)**: Motor v16 pulido con eliminación de acciones ilegales, DIG oportunista para unidades inactivas, Capital Guard y Zero-Waste Sweeper | **$111,968** (Seed 42) / Prom. $82,094 | **Listo para subir** | **100% Win-Rate vs v14, v12, v10** (+100k margin) y victoria sobre v15 (+912 margin). |
 
 ---
 
@@ -207,6 +208,26 @@ A partir de la observación de las partidas perdidas en Kaggle donde los rivales
 
 * **Resultados en Torneo de 10 Semillas:**
   - **Semilla 42:** Salta de $46,601 a **$111,968** (+**$65,367** de ganancia neta).
-  - **Promedio 10 Semillas:** Pasa de $75,393 a **$81,956** (+**$6,562** de ventaja promedio).
+  - **Promedio 10 Semillas:** Pasa de $75,393 a **$82,093.6** (+**$6,700** de ventaja promedio).
   - **Duelo Directo v16 vs v15:** La v16 vence o empata a la v15 en todas las semillas evaluadas, superándola por hasta +$8,195 por partida.
+
+---
+
+## ⚡ El Siguiente Intento: Apex Colossus (Versión 17)
+
+### 12. Envío #17: [`submission_v17_apex_colossus.py`](file:///C:/Proyectos/Kaggriculture/submission_v17_apex_colossus.py) 🚀 (PREPARADO PARA ENVÍO DIARIO)
+* **Auditoría del Protocolo Oficial del Simulador:**
+  Al inspeccionar a bajo nivel `kaggriculture.py` en `_apply_unit_action`:
+  1. Se descubrió que la acción `CLEAR_WEED` generada por wrappers heredados **no existe en el simulador oficial** (el simulador solo reconoce `DIG` sobre la casilla del propio peón). Cualquier `CLEAR_WEED` era descartado silenciosamente como `PASS`.
+  2. En v17 se implementó **`_opportunistic_weed_dig`**: si un peón o el granjero está en estado de espera (`PASS`) y bajo sus pies brotó una maleza (`tile.get('weed') == True`), ejecuta automáticamente `["DIG"]` de forma limpia y 100% legal, evitando la propagación de malezas sin consumir turnos activos de movimiento.
+  3. Mantiene el blindaje financiero del **Cow Capital Guard** y el barrido final del **Zero-Waste Sweeper** (comprobado: 0 excedentes en cobertizo y 0 excedentes en manos en todas las semillas).
+
+* **Resultados en el Torneo Cruzado Intergeneracional (20 partidas por rival):**
+  - **v17 vs v15 (1042 Elo):** Gana con **+$911.6 de margen promedio**, rescatando la Semilla 42 ($54.7k vs $46.6k y $111.9k vs $111.1k).
+  - **v17 vs v14 (Ranch Colossus):** **10 victorias de 10 partidas (100% Win-Rate)**. Promedio **$133,268.9 vs $31,797.5** (Margen demoledor: **+$101,471.4**).
+  - **v17 vs v12 (Ranch Apex):** **10 victorias de 10 partidas (100% Win-Rate)**. Promedio **$140,124.9 vs $33,230.5** (Margen demoledor: **+$106,894.4**).
+  - **v17 vs v10 (Apex Master):** **10 victorias de 10 partidas (100% Win-Rate)**. Promedio **$146,078.0 vs $22,920.5** (Margen demoledor: **+$123,157.5**).
+
+* **Archivo Listo para Subir:** [`submission.py`](file:///C:/Proyectos/Kaggriculture/submission.py) / [`submission_v17_apex_colossus.py`](file:///C:/Proyectos/Kaggriculture/submission_v17_apex_colossus.py) (100% autónomo, validado en entorno estéril aislado).
+
 
