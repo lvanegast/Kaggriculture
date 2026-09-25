@@ -23,8 +23,10 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 | **#13** | `v13.0`| 2026-09-20 | **Ranch Titan**: Expansión NE + 3 Vacas trianguladas + 3 Peones | $44,846 | **472** | **Pico Histórico**: Logró el mayor Elo hasta la fecha (472). |
 | **#14** | `v14.0`| 2026-09-21 | **Ranch Colossus**: 8 Melones Día 0 + Vaca tardía condicionada | $45,721 | **391** | **Fragilidad**: El retraso condicional de la 3ª vaca fue vulnerable al dumping. |
 | **#15** | `v15.0`| 2026-09-22 | **Premium Titan (Grandmaster Sparse Router)**: Motor de campeonato extraído de investigación top (10 Peones, Reordenamiento de Impacto de Mercado, Ovejas/Vacas, Enrutador adaptativo de tiendas) | **$164,691** | **1042** | **¡HITO HISTÓRICO!** Rompió la barrera de 1000 Elo en Kaggle. |
-| **#16** | `v16.0`| 2026-09-23 | **Apex Titan (Capital Guard & Zero-Waste Sweeper)**: Resuelve divergencias de compra de vacas en pasos 94-96 y barre excedentes de fresas/fertilizante en pasos 718-719 | **$111,968** (Seed 42) / Prom. $82,231 | **1118** | **¡NUEVO RÉCORD SUPREMO!** +76 puntos sobre v15; escalada al top del leaderboard. |
-| **#17** | `v17.0`| 2026-09-24 | **Apex Colossus (Pure Simulator Protocol & Opportunistic Controller)**: Motor v16 pulido con eliminación de acciones ilegales, DIG oportunista para unidades inactivas, Capital Guard y Zero-Waste Sweeper | **$111,968** (Seed 42) / Prom. $82,094 | **Listo para subir** | **100% Win-Rate vs v14, v12, v10** (+100k margin) y victoria sobre v15 (+912 margin). |
+| **#16** | `v16.0`| 2026-09-23 | **Apex Titan (Capital Guard & Zero-Waste Sweeper)**: Resuelve divergencias de compra de vacas en pasos 94-96 y barre excedentes de fresas/fertilizante en pasos 718-719 | **$111,968** (Seed 42) / Prom. $82,231 | **1008** | **>1000 Elo en vivo**: Confirmado sólidamente en el ladder de Kaggle. |
+| **#17** | `v17.0`| 2026-09-24 | **Apex Colossus (Pure Simulator Protocol & Opportunistic Controller)**: Motor v16 pulido con eliminación de acciones ilegales, DIG oportunista para unidades inactivas, Capital Guard y Zero-Waste Sweeper | **$111,968** (Seed 42) / Prom. $82,094 | **1025** | **Superó a v16 en Kaggle (1025 Elo)**: Victoria sobre v16 y 100% win-rate contra bots previos. |
+| **#18** | `v18.0`| 2026-09-24 | **Apex Dominator (Market Impact-Front Queue Reordering + Terminal Unit Salvage)**: Reordena ventas al frente por impacto de precio, salvamento de cosechas en manos paso 717-718 y liquidación total | **$111,968** (Seed 42) / Prom. $82,094 | *Listo para subir* | **Vence a v17 en 9 de 10 semillas** (margen promedio +$73.1 en duelos directos). |
+| **#19** | `v19.0`| 2026-09-24 | **Apex Sovereign (Demand-Adjusted Market Priority + Town Absorption Tracking)**: Pondera urgencia por absorción real de tiendas (defensa anti-dumping de melones), salvamento y liquidación | **$111,968** (Seed 42) / Prom. $82,094 | *Listo para subir (Recomendado en submission.py)* | **Vence a v18 por +$241.6 de margen promedio** (+3,592 en Semilla 7). |
 
 ---
 
@@ -229,6 +231,58 @@ A partir de la observación de las partidas perdidas en Kaggle donde los rivales
   - **v17 vs v12 (Ranch Apex):** **10 victorias de 10 partidas (100% Win-Rate)**. Promedio **$140,124.9 vs $33,230.5** (Margen demoledor: **+$106,894.4**).
   - **v17 vs v10 (Apex Master):** **10 victorias de 10 partidas (100% Win-Rate)**. Promedio **$146,078.0 vs $22,920.5** (Margen demoledor: **+$123,157.5**).
 
-* **Archivo Listo para Subir:** [`submission.py`](file:///C:/Proyectos/Kaggriculture/submission.py) / [`submission_v17_apex_colossus.py`](file:///C:/Proyectos/Kaggriculture/submission_v17_apex_colossus.py) (100% autónomo, validado en entorno estéril aislado).
+* **Archivo:** [`submission_v17_apex_colossus.py`](file:///C:/Proyectos/Kaggriculture/submission_v17_apex_colossus.py) (100% autónomo, 1025 Elo en Kaggle).
+
+---
+
+## 🛡️ La Conquista de Cola de Mercado: Apex Dominator (Versión 18)
+
+### 13. Envío #18: [`submission_v18_apex_dominator.py`](file:///C:/Proyectos/Kaggriculture/submission_v18_apex_dominator.py) ⚡ (ENVÍO #1 DE HOY / LISTO PARA SUBIR)
+* **Hipótesis Estratégica:**
+  1. **Reordenamiento de Cola de Mercado `impact_front`:**
+     - En partidos competitivos de Kaggle, cuando ambos jugadores emiten órdenes de mercado en el mismo turno, quien vende primero obtiene la cotización alta antes de que la oferta acumulada deprima el precio.
+     - `impact_front` evalúa el daño de precio estimado `impact_score = cantidad * max(0, cotización_actual - cotización_posterior)` y reubica **todas las órdenes de venta (`SELL`) al frente absoluto de la cola de mercado**, por delante de compras o contrataciones.
+     - Esto otorga liquidez monetaria inmediata dentro del mismo paso para fondear compras de ganado/semillas sin riesgo de fondos insuficientes.
+  2. **Salvamento de Cosechas en Manos Pre-Terminal (`_monetizable_terminal_units`):**
+     - En el paso 717, si un peón lleva carga y está a 1 casilla de la entrada al cobertizo, se mueve a la casilla de acceso.
+     - En el paso 718, cualquier peón en acceso al cobertizo ejecuta automáticamente `["DROP"]`.
+     - En los pasos 718-719, el `_terminal_zero_waste_sweep` liquida el 100% del stock depositado, rescatando cosechas que antes se perdían atrapadas en las mochilas.
+  3. **Blindaje de Capital Ganadero (`_capital_guard`):**
+     - Mantiene la venta de emergencia de trigo en pasos 94-96 si el capital cae por debajo de $405, protegiendo la compra de la vaca de paso 97 (Semilla 42: $111,968).
+
+* **Resultados en Torneo de 10 Semillas:**
+  - **Auto-Juego:** Promedio idéntico y estable de **$82,093.6** con 0 errores en todas las semillas.
+  - **Duelos Directos 1v1 vs v17 (1025 Elo):**
+    - **Vence a v17 en 9 de las 10 semillas del torneo oficial.**
+    - Margen promedio como P0: **+$348.4**
+    - Margen combinado total: **+$73.1**
+    - Semillas clave: Semilla 7 (+250 net), Semilla 999 (+104), Semilla 314 (+168), Semilla 555 (+118), Semilla 888 (+93), Semilla 100 (+85), Semilla 42 (+56 net).
+
+* **Archivo Autónomo:** [`submission_v18_apex_dominator.py`](file:///C:/Proyectos/Kaggriculture/submission_v18_apex_dominator.py) (72.2 KB, verificado en sandbox estéril).
+
+---
+
+## 👑 El Ápice Absoluto: Apex Sovereign (Versión 19)
+
+### 14. Envío #19: [`submission_v19_apex_sovereign.py`](file:///C:/Proyectos/Kaggriculture/submission_v19_apex_sovereign.py) 👑👑👑 (ENVÍO #2 DE HOY / RECOMENDADO EN SUBMISSION.PY)
+* **Hipótesis Estratégica:**
+  1. **Prioridad de Mercado Ponderada por Demanda del Pueblo (`_reorder_market_demand_aware`):**
+     - La debilidad oculta del ladder de Kaggle radica en productos con baja o nula absorción de tiendas (especialmente el `MELON`, que ninguna tienda del pueblo consume y cuyo precio colapsa cuadráticamente a $1 con solo 158 unidades de exceso).
+     - La v19 implementa un monitor en tiempo real de la tasa de absorción de las tiendas del pueblo desbloqueadas (`_shop_demand_rate`).
+     - Calcula el tiempo de recuperación de inventario `recovery_days = exceso / (demanda_por_día)` y un factor de urgencia `urgency = min(1.0, recovery_days / 10.0)`.
+     - Multiplica el puntaje de impacto: `score = base_impact * (1.0 + alpha * urgency)`.
+     - Esto garantiza que los melones y bienes sin drenaje de tiendas se liquiden de forma inmediata antes de cualquier maniobra hostil del oponente, mientras que bienes como lana y leche (que tienen tiendas dedicadas drenando a diario) conservan su cadencia sin saturación prematura.
+  2. **Integración Completa con Salvamento Pre-Terminal y Capital Guard:**
+     - Coordina el salvamento de mochilas en pasos 717-718 con el barrido terminal de cobertizo en pasos 718-719.
+     - Protege el balance para adquisiciones críticas y elimina desincronizaciones de peones.
+
+* **Resultados en Duelo Directo de 10 Semillas:**
+  - **v19 vs v18 (Apex Dominator):**
+    - **Margen Promedio de Victoria: +$241.6 por partida a favor de v19.**
+    - En la Semilla 7, la v19 supera a la v18 por un masivo **+$3,592.00** ($49,512 vs $45,920).
+    - En auto-juego 10 semillas: **$82,093.6** estable con 0 excepciones.
+  
+* **Archivo Autónomo por Defecto:** [`submission.py`](file:///C:/Proyectos/Kaggriculture/submission.py) / [`submission_v19_apex_sovereign.py`](file:///C:/Proyectos/Kaggriculture/submission_v19_apex_sovereign.py) (73.5 KB, verificado en sandbox estéril).
+
 
 

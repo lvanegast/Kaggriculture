@@ -739,7 +739,7 @@ _V43_POLICY = _v43_build(_V43_ROUTES, _V43_CONFIG)
 
 import math
 
-# --- V19 APEX SOVEREIGN: Core Constants & Guards ---
+# --- V18 APEX DOMINATOR: Core Constants & Guards ---
 _PRODUCTS_ORDER = ('WOOL', 'MELON', 'MILK', 'STRAWBERRY', 'FERTILIZER', 'CARROT', 'TOMATO', 'EGG', 'WHEAT')
 
 PRICE_FLOOR = 1
@@ -753,17 +753,6 @@ MARKET_PARAMS = {
     "MILK": (160, 10000, 122, "sqrt", 0.6, "linear", 1.6),
     "WOOL": (200, 10000, 105, "log", 0.2, "sq", 3.2),
     "FERTILIZER": (100, 10000, 200, "linear", 0.4, "linear", 0.4),
-}
-
-SHOP_PRODUCTS = {
-    "BAKERY": ("EGG", "WHEAT"),
-    "PIZZA_SHOP": ("MILK", "TOMATO", "WHEAT"),
-    "BRUNCH_SPOT": ("EGG", "WHEAT", "STRAWBERRY"),
-    "YARN_STORE": ("WOOL",),
-    "ICE_CREAM_SHOP": ("STRAWBERRY", "MILK", "WHEAT"),
-    "PET_CAFE": ("CARROT",),
-    "SMOOTHIE_SHOP": ("STRAWBERRY", "MILK"),
-    "FARMERS_MARKET": ("WHEAT", "CARROT", "TOMATO", "STRAWBERRY"),
 }
 
 def _seat_guard(obs):
@@ -784,7 +773,7 @@ def _align_hands(action, obs):
     action["hands"] = hands
     return action
 
-# --- V19 Capital Guard ---
+# --- V18 Capital Guard ---
 def _capital_guard(obs, action, step):
     seat = _seat_guard(obs)
     farm = _farm_guard(obs, seat)
@@ -803,7 +792,7 @@ def _capital_guard(obs, action, step):
             action['market'] = market
     return action
 
-# --- V19 Pre-Terminal Unit Salvage ---
+# --- V18 Pre-Terminal Unit Salvage ---
 def _monetizable_terminal_units(obs, action, step):
     action = _align_hands(action, obs)
     if step not in (717, 718):
@@ -852,7 +841,7 @@ def _monetizable_terminal_units(obs, action, step):
     action["hands"] = unit_actions[1:]
     return action
 
-# --- V19 Terminal Zero-Waste Sweep ---
+# --- V18 Terminal Zero-Waste Sweep ---
 def _terminal_zero_waste_sweep(obs, action, step):
     if step >= 718:
         private = obs.get('private', {}) if isinstance(obs, dict) else getattr(obs, 'private', {})
@@ -871,7 +860,7 @@ def _terminal_zero_waste_sweep(obs, action, step):
         action['market'] = market
     return action
 
-# --- V19 Demand-Adjusted Urgency Market Priority ---
+# --- V18 Impact-Front Sequential Queue Priority ---
 def _shape(name: str, value: float, scale: float | None = None) -> float:
     value = max(0.0, float(value))
     if name == "linear":
@@ -904,25 +893,12 @@ def _market_price(item: str, inventory: int) -> int:
 def _is_sell(order) -> bool:
     return isinstance(order, (list, tuple)) and len(order) >= 3 and order[0] == "SELL" and order[1] in MARKET_PARAMS
 
-def _shop_demand_rate(obs):
-    town = obs.get("town", {}) if isinstance(obs, dict) else getattr(obs, "town", {})
-    unlocked = list(town.get("unlocked_shops", []) or [])
-    demand = {p: 0.0 for p in MARKET_PARAMS}
-    demand["MELON"] = 1.0 / 24.0
-    for shop in unlocked:
-        prods = SHOP_PRODUCTS.get(shop, ())
-        mult = 2.0 if len(prods) == 1 else 1.0
-        for p in prods:
-            if p in demand:
-                demand[p] += mult / 4.0
-    return demand
-
-def _demand_adjusted_impact_score(obs, order, alpha=1.0) -> float:
+def _impact_score(obs, order) -> float:
     if not _is_sell(order):
         return float("-inf")
     item = str(order[1])
     try:
-        qty = max(0, int(order[2]))
+        quantity = max(0, int(order[2]))
     except (TypeError, ValueError):
         return 0.0
     market = obs.get("market", {}) if isinstance(obs, dict) else getattr(obs, "market", {})
@@ -930,21 +906,13 @@ def _demand_adjusted_impact_score(obs, order, alpha=1.0) -> float:
     prices = market.get("prices", {}) if isinstance(market, dict) else {}
     current_inventory = int(inventory.get(item, 10000) or 0)
     current_quote = float(prices.get(item, _market_price(item, current_inventory)) or 0)
-    later_quote = float(_market_price(item, current_inventory + qty))
-    base_score = float(qty) * max(0.0, current_quote - later_quote)
-    if base_score <= 0.0:
-        return base_score
-    post_inventory = current_inventory + qty
-    excess = max(0.0, float(post_inventory - 10000))
-    rate = _shop_demand_rate(obs).get(item, 0.0)
-    recovery_days = excess / max(0.25, rate * 24.0)
-    urgency = min(1.0, recovery_days / 10.0)
-    return base_score * (1.0 + float(alpha) * urgency)
+    later_quote = float(_market_price(item, current_inventory + quantity))
+    return float(quantity) * max(0.0, current_quote - later_quote)
 
-def _reorder_market_demand_aware(obs, action, alpha=1.0):
+def _reorder_market_impact_front(obs, action):
     market = list(action.get("market", []))
     sell_rows = [
-        (_demand_adjusted_impact_score(obs, order, alpha), -index, order)
+        (_impact_score(obs, order), -index, order)
         for index, order in enumerate(market)
         if _is_sell(order)
     ]
@@ -963,7 +931,7 @@ def agent(obs, configuration=None):
         action = _capital_guard(obs, action, step)
         action = _monetizable_terminal_units(obs, action, step)
         action = _terminal_zero_waste_sweep(obs, action, step)
-        action = _reorder_market_demand_aware(obs, action, alpha=1.0)
+        action = _reorder_market_impact_front(obs, action)
         return _align_hands(action, obs)
     except Exception:
         farm = _farm_guard(obs, _seat_guard(obs))
