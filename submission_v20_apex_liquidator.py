@@ -1,14 +1,13 @@
-"""Submission v21 - Apex Sovereign Prime.
+"""Submission v20 - Apex Liquidator.
 
-Enhancements over v20:
-- Perfect Terminal Sweep: Replaces raw market orders at steps 718-719 with strictly
-  verified non-zero shed inventory, ranked by total monetizable value (price * quantity),
-  purging ghost/zero-quantity market orders that eat up the 10-order market capacity.
+Enhancements over v19:
 - Post-Day 24 Fertilizer Liquidation Engine: Sells surplus fertilizer after Step 595
-  at peak market price ($15-$24) before it collapses to $1 residual value.
+  (when all crop fertilization permanently ceases) at peak market price ($15-$24)
+  before it collapses to $1 residual value on Days 28-29.
 - Demand-Aware Market Impact Reordering (alpha=1.0).
 - Capital Guard (guaranteed step 97 Cow purchase under price deflation).
 - Pre-Terminal Monetizable Unit Salvage (steps 717-718 drop/harvest routines).
+- Terminal Zero-Waste Market Sweep (steps 718-719).
 """
 
 import base64
@@ -893,26 +892,24 @@ def _monetizable_terminal_units(obs, action, step):
     action["hands"] = unit_actions[1:]
     return action
 
-# --- V21 Perfect Terminal Sweep ---
-def _perfect_terminal_sweep(obs, action, step):
-    if step not in (718, 719):
-        return action
-    private = obs.get("private", {}) if isinstance(obs, dict) else getattr(obs, "private", {})
-    shed = dict(private.get("shed", {}) if isinstance(private, dict) else {})
-    prices = obs.get("market", {}).get("prices", {}) if isinstance(obs.get("market"), dict) else {}
-
-    sells = []
-    for p in _PRODUCTS_ORDER:
-        qty = int(shed.get(p, 0) or 0)
-        if qty > 0:
-            price = prices.get(p, 1)
-            score = price * qty
-            sells.append((score, p, qty))
-
-    sells.sort(reverse=True)
-    action["market"] = [["SELL", p, q] for _, p, q in sells[:10]]
+# --- V19 Terminal Zero-Waste Sweep ---
+def _terminal_zero_waste_sweep(obs, action, step):
+    if step >= 718:
+        private = obs.get('private', {}) if isinstance(obs, dict) else getattr(obs, 'private', {})
+        shed = dict(private.get('shed', {}) if isinstance(private, dict) else {})
+        market = list(action.get('market', []))
+        
+        for o in market:
+            if len(o) >= 3 and o[0] == 'SELL' and o[1] in shed:
+                shed[o[1]] = max(0, shed[o[1]] - int(o[2]))
+                
+        for p in _PRODUCTS_ORDER:
+            rem = shed.get(p, 0)
+            if rem > 0 and len(market) < 10:
+                market.append(['SELL', p, rem])
+                
+        action['market'] = market
     return action
-
 
 # --- V19 Demand-Adjusted Urgency Market Priority ---
 def _shape(name: str, value: float, scale: float | None = None) -> float:
@@ -1006,7 +1003,7 @@ def agent(obs, configuration=None):
         action = _capital_guard(obs, action, step)
         action = _post_day24_fertilizer_liquidator(obs, action, step)
         action = _monetizable_terminal_units(obs, action, step)
-        action = _perfect_terminal_sweep(obs, action, step)
+        action = _terminal_zero_waste_sweep(obs, action, step)
         action = _reorder_market_demand_aware(obs, action, alpha=1.0)
         return _align_hands(action, obs)
     except Exception:

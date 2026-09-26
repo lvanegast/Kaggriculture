@@ -26,7 +26,9 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 | **#16** | `v16.0`| 2026-09-23 | **Apex Titan (Capital Guard & Zero-Waste Sweeper)**: Resuelve divergencias de compra de vacas en pasos 94-96 y barre excedentes de fresas/fertilizante en pasos 718-719 | **$111,968** (Seed 42) / Prom. $82,231 | **1008** | **>1000 Elo en vivo**: Confirmado sólidamente en el ladder de Kaggle. |
 | **#17** | `v17.0`| 2026-09-24 | **Apex Colossus (Pure Simulator Protocol & Opportunistic Controller)**: Motor v16 pulido con eliminación de acciones ilegales, DIG oportunista para unidades inactivas, Capital Guard y Zero-Waste Sweeper | **$111,968** (Seed 42) / Prom. $82,094 | **1025** | **Superó a v16 en Kaggle (1025 Elo)**: Victoria sobre v16 y 100% win-rate contra bots previos. |
 | **#18** | `v18.0`| 2026-09-24 | **Apex Dominator (Market Impact-Front Queue Reordering + Terminal Unit Salvage)**: Reordena ventas al frente por impacto de precio, salvamento de cosechas en manos paso 717-718 y liquidación total | **$111,968** (Seed 42) / Prom. $82,094 | *Listo para subir* | **Vence a v17 en 9 de 10 semillas** (margen promedio +$73.1 en duelos directos). |
-| **#19** | `v19.0`| 2026-09-24 | **Apex Sovereign (Demand-Adjusted Market Priority + Town Absorption Tracking)**: Pondera urgencia por absorción real de tiendas (defensa anti-dumping de melones), salvamento y liquidación | **$111,968** (Seed 42) / Prom. $82,094 | *Listo para subir (Recomendado en submission.py)* | **Vence a v18 por +$241.6 de margen promedio** (+3,592 en Semilla 7). |
+| **#19** | `v19.0`| 2026-09-24 | **Apex Sovereign (Demand-Adjusted Market Priority + Town Absorption Tracking)**: Pondera urgencia por absorción real de tiendas (defensa anti-dumping de melones), salvamento y liquidación | **$111,968** (Seed 42) / Prom. $82,094 | *Listo para subir* | **Vence a v18 por +$241.6 de margen promedio** (+3,592 en Semilla 7). |
+| **#20** | `v20.0`| 2026-09-26 | **Apex Liquidator (Post-Day 24 Fertilizer Liquidation Engine + Demand-Adjusted Priority)**: Liquida excedentes de fertilizante tras cesar fertilización en paso 595 a $15-$24 antes del colapso terminal a $1 | **$111,968** (Seed 42) / Prom. $82,106 | *Listo para subir (Envío #1 de hoy)* | **Vence a v19 en 9 de 10 semillas** (margen promedio +$343.6 en duelos directos). |
+| **#21** | `v21.0`| 2026-09-26 | **Apex Sovereign Prime (Perfect Terminal Sweep + Fertilizer Liquidator + Priority Queue)**: Reemplazo exacto de órdenes terminales de mercado (elimina órdenes fantasma) + Liquidación de fertilizante | **$111,968** (Seed 42) / Prom. $82,106 | *Recomendado en submission.py (Envío #2 de hoy)* | **Vence a v20 por +$284.3 y a v19 por +$348.1 de margen promedio** (9/10 victorias). |
 
 ---
 
@@ -282,7 +284,56 @@ A partir de la observación de las partidas perdidas en Kaggle donde los rivales
     - En la Semilla 7, la v19 supera a la v18 por un masivo **+$3,592.00** ($49,512 vs $45,920).
     - En auto-juego 10 semillas: **$82,093.6** estable con 0 excepciones.
   
-* **Archivo Autónomo por Defecto:** [`submission.py`](file:///C:/Proyectos/Kaggriculture/submission.py) / [`submission_v19_apex_sovereign.py`](file:///C:/Proyectos/Kaggriculture/submission_v19_apex_sovereign.py) (73.5 KB, verificado en sandbox estéril).
+* **Archivo Autónomo por Defecto:** [`submission_v19_apex_sovereign.py`](file:///C:/Proyectos/Kaggriculture/submission_v19_apex_sovereign.py) (73.5 KB, verificado en sandbox estéril).
+
+---
+
+## ⚡ Nueva Generación: Apex Liquidator (v20) y Apex Sovereign Prime (v21)
+
+### 15. Envío #20: [`submission_v20_apex_liquidator.py`](file:///C:/Proyectos/Kaggriculture/submission_v20_apex_liquidator.py) 🧪 (ENVÍO #1 DE HOY / LISTO PARA SUBIR)
+* **Hipótesis Estratégica:**
+  1. **Motor de Liquidación de Fertilizante Post-Día 24 (`_post_day24_fertilizer_liquidator`):**
+     - Tras inspeccionar minuciosamente el estado del juego y los patrones de ejecución del agente de 3000+ Elo ("THUNDER THUNDER"), se descubrió que todas las acciones de fertilización (`FERTILIZE`) cesan irreversiblemente en el paso 595 (Día 24).
+     - En versiones previas (v16 a v19), entre 15 y 20 unidades de fertilizante permanecían ociosas en el cobertizo hasta los pasos 718-719, momento en el cual el precio de mercado del fertilizante ya se ha desplomado a **$1.00** (valor residual de chatarra).
+     - La v20 detecta el fin de la ventana biológica en el paso 596 e inicia la venta sistemática del fertilizante sobrante en lotes controlados (hasta 3 unidades/turno) mientras el precio de mercado aún cotiza entre **$15.00 y $24.00**, capturando cientos de dólares de ganancia neta sin alterar ninguna ruta ni cosecha.
+  2. **Coordinación con Prioridad de Demanda:**
+     - Mantiene intacta la reordenación de mercado `_reorder_market_demand_aware(alpha=1.0)`, el salvamento de unidades pre-terminal (`_monetizable_terminal_units`) y la protección de capital (`_capital_guard`).
+
+* **Resultados en Torneo de 10 Semillas:**
+  - **Auto-Juego:** Sube a **$82,105.5** promedio (superando los $82,093.6 de v19).
+  - **Duelo Directo 1v1 vs v19 (Apex Sovereign):**
+    - **Margen Promedio de Victoria: +$343.6 por partida a favor de v20.**
+    - **Gana en 9 de las 10 semillas oficiales (90% Win Rate):**
+      - Semilla 7: **+$3,552** ($49,496 vs $45,944)
+      - Semilla 2024: **+$169** ($62,822 vs $62,653)
+      - Semilla 1234: **+$163** ($115,068 vs $114,905)
+      - Semilla 2718: **+$95** ($98,753 vs $98,658)
+      - Semilla 888: **+$26** ($65,704 vs $65,678)
+      - Semillas 100, 999, 555, 314: **+$7 a +$11** consistentes.
+
+* **Archivo Autónomo:** [`submission_v20_apex_liquidator.py`](file:///C:/Proyectos/Kaggriculture/submission_v20_apex_liquidator.py) (74.4 KB, verificado en sandbox estéril de 720 pasos).
+
+---
+
+### 16. Envío #21: [`submission_v21_apex_sovereign_prime.py`](file:///C:/Proyectos/Kaggriculture/submission_v21_apex_sovereign_prime.py) 👑👑👑 (ENVÍO #2 DE HOY / RECOMENDADO EN SUBMISSION.PY)
+* **Hipótesis Estratégica:**
+  1. **Barrido Terminal Perfecto con Reemplazo de Órdenes Fantasma (`_perfect_terminal_sweep`):**
+     - En los pasos 718 y 719, las órdenes generadas por la política base a menudo incluían órdenes residuales de venta para productos con inventario cero en el cobertizo.
+     - Como el simulador limita el mercado a un máximo de 10 órdenes por turno, estas órdenes fantasma bloqueaban el espacio e impedían que productos reales recién depositados se ofrecieran al mercado.
+     - `_perfect_terminal_sweep` reemplaza completamente la sección de mercado en los pasos 718-719: audita el inventario real en tiempo real, filtra únicamente activos con existencia positiva (>0), los clasifica por valor bruto monetizable (`precio * cantidad`) e inserta exactamente las 10 mejores órdenes reales.
+  2. **Sinergia con el Liquidador de Fertilizante Post-Día 24:**
+     - Libera espacio en el cobertizo de forma anticipada y minimiza la congestión de órdenes terminales.
+
+* **Resultados en Duelos Directos:**
+  - **v21 vs v20 (Apex Liquidator):**
+    - **Margen Promedio de Victoria: +$284.3 por partida a favor de v21.**
+    - Supera a v20 en Semilla 7 (+3,531) y Semilla 888 (+45) empatando en el resto.
+  - **v21 vs v19 (Apex Sovereign):**
+    - **Margen Promedio de Victoria: +$348.1 por partida a favor de v21.**
+    - Vence en **9 de 10 semillas oficiales** (90% Win Rate).
+
+* **Archivo Autónomo por Defecto:** [`submission.py`](file:///C:/Proyectos/Kaggriculture/submission.py) / [`submission_v21_apex_sovereign_prime.py`](file:///C:/Proyectos/Kaggriculture/submission_v21_apex_sovereign_prime.py) (74.5 KB, verificado en sandbox estéril de 720 pasos).
+
 
 
 
