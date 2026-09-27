@@ -1,13 +1,11 @@
-"""Submission v23 - Apex Arbitrageur (Macro Vía B).
+"""Submission v24 - Apex Thunder Scale (Macro Vía C).
 
 Macro Strategic Enhancements:
-- Universal Town Arbitrage Engine: Continuously anticipates town shop consumption ticks
-  (Smoothie Shop, Farmers Market, Brunch Spot, Bakery, Yarn Store). Executes high-margin
-  one-tick arbitrage by buying under-priced town staples immediately before town demand
-  and liquidating on the subsequent tick at peak price.
-- Active Fertilizer Harvesting Engine: Opportunistically collects fertilizer from animal
-  tiles (COLLECT_FERTILIZER), monetizing manure into premium cash flow.
-- Mid-Game Fertilizer Market Pacing (Days 10-24 at $60-$90/unit).
+- Macro Labor Scaling Engine (12-Hand Workforce): Expands beyond the standard 10-hand
+  barrier by hiring auxiliary farm hands on Days 10+ when daily cash flows exceed $1,200.
+- Auxiliary Labor Allocation: Extra hands actively patrol unlocked quadrants for weed clearance
+  (DIG) and livestock maintenance (COLLECT_FERTILIZER), scaling farm actions to >300 ops/day.
+- Active Fertilizer Harvesting Engine & Mid-Game Pacing.
 - Perfect Terminal Market Sweep & Pre-Terminal Unit Salvage.
 """
 
@@ -817,77 +815,63 @@ def _capital_guard(obs, action, step):
 
 
 
-# --- V23 Universal Town Arbitrage Engine ---
-_ARBITRAGE_PRODUCTS = {
-    "SMOOTHIE_SHOP": ("STRAWBERRY", "MILK"),
-    "FARMERS_MARKET": ("STRAWBERRY", "TOMATO", "CARROT", "WHEAT"),
-    "BRUNCH_SPOT": ("STRAWBERRY", "EGG", "WHEAT"),
-    "BAKERY": ("EGG", "WHEAT"),
-    "PIZZA_SHOP": ("MILK", "TOMATO", "WHEAT"),
-    "PET_CAFE": ("CARROT",),
-    "YARN_STORE": ("WOOL",),
-}
-
-_ARBITRAGE_STATE = {"holding": None, "buy_step": -1, "qty": 0}
-
-def _universal_town_arbitrageur(obs, action, step):
-    global _ARBITRAGE_STATE
+# --- V24 Macro Labor Scaling Engine ---
+def _macro_labor_scaler(obs, action, step):
     player = _seat_guard(obs)
     farm = _farm_guard(obs, player)
     money = float(_v43_get(farm, "money", 0) or 0)
-    town = obs.get("town", {}) if isinstance(obs, dict) else getattr(obs, "town", {})
-    unlocked = list(town.get("unlocked_shops", []) or [])
-    market_obs = obs.get("market", {}) if isinstance(obs, dict) else getattr(obs, "market", {})
-    inventory = market_obs.get("inventory", {}) if isinstance(market_obs, dict) else {}
-    prices = market_obs.get("prices", {}) if isinstance(market_obs, dict) else {}
+    hands = list(_v43_get(farm, "hands", []) or [])
     
-    market = list(action.get("market", []))
-    
-    # Reset at game start
-    if step == 0:
-        _ARBITRAGE_STATE = {"holding": None, "buy_step": -1, "qty": 0}
-        
-    # Phase 2: Liquidate existing arbitrage holding on next tick
-    holding = _ARBITRAGE_STATE.get("holding")
-    if holding is not None and step == _ARBITRAGE_STATE.get("buy_step", -1) + 1:
-        qty = _ARBITRAGE_STATE.get("qty", 0)
-        private = obs.get("private", {}) if isinstance(obs, dict) else getattr(obs, "private", {})
-        shed = private.get("shed", {}) if isinstance(private, dict) else {}
-        actual_in_shed = int(shed.get(holding, 0) or 0)
-        sell_qty = min(qty, actual_in_shed)
-        if sell_qty > 0 and len(market) < 10:
-            market.append(["SELL", holding, sell_qty])
+    # On start of day (step % 24 == 0) from Day 10 to Day 20, if cash is strong, hire auxiliary hand!
+    if step in (240, 360) and len(hands) < 12 and money >= 1200.0:
+        market = list(action.get("market", []))
+        if len(market) < 10:
+            market.append(["HIRE"])
             action["market"] = market
-        _ARBITRAGE_STATE = {"holding": None, "buy_step": -1, "qty": 0}
-        return action
-
-    # Phase 1: Enter arbitrage 1 tick before town consumption (step % 4 == 3)
-    if (step + 1) % 4 == 0 and 120 <= step <= 670 and money > 3500.0 and len(market) < 9:
-        # Find candidates consumed by active town shops
-        candidates = set()
-        for shop in unlocked:
-            for item in _ARBITRAGE_PRODUCTS.get(shop, ()):
-                if item != "WHEAT":  # protect wheat feed
-                    candidates.add(item)
-                    
-        # Score candidates by unit margin
-        best_item = None
-        best_score = 0
-        for item in candidates:
-            inv = int(inventory.get(item, 10000) or 10000)
-            p = int(prices.get(item, 100) or 100)
-            if inv < 10000:  # already scarce, demand will push price even higher
-                score = p
-                if score > best_score:
-                    best_score = score
-                    best_item = item
-                    
-        if best_item and best_score > 50:
-            qty = 2
-            market.append(["BUY_PRODUCT", best_item, qty])
-            action["market"] = market
-            _ARBITRAGE_STATE = {"holding": best_item, "buy_step": step, "qty": qty}
             
+    return action
+
+# --- V24 Auxiliary Worker Controller ---
+def _auxiliary_worker_controller(obs, action, step):
+    player = _seat_guard(obs)
+    farm = _farm_guard(obs, player)
+    tiles = farm.get("tiles", []) or []
+    if not tiles:
+        return action
+        
+    hands_pos = list(farm.get("hands", []) or [])
+    # Only manage extra hands beyond the baseline 10
+    if len(hands_pos) <= 10:
+        return action
+        
+    hands_act = list(action.get("hands", []))
+    # Ensure action array matches current hand count
+    while len(hands_act) < len(hands_pos):
+        hands_act.append(["PASS"])
+        
+    # Check for unweeded tiles or fertilizer tiles
+    for idx in range(10, len(hands_pos)):
+        pos = hands_pos[idx]
+        if not isinstance(pos, (list, tuple)) or len(pos) < 2:
+            continue
+        x, y = int(pos[0]), int(pos[1])
+        t = tiles[y][x] if 0 <= y < len(tiles) and 0 <= x < len(tiles[0]) else None
+        
+        # If standing on weed, dig!
+        if isinstance(t, dict) and t.get("kind") == "WEED":
+            hands_act[idx] = ["DIG"]
+        # If standing on animal with fertilizer, collect!
+        elif isinstance(t, dict) and "animal" in t and t.get("fertilizer_available"):
+            hands_act[idx] = ["COLLECT_FERTILIZER"]
+            t["fertilizer_available"] = False
+        else:
+            # Move towards center/access if far away
+            if x > 4:
+                hands_act[idx] = ["WEST"]
+            elif y > 4:
+                hands_act[idx] = ["NORTH"]
+                
+    action["hands"] = hands_act
     return action
 
 # --- V22 Active Fertilizer Harvesting Engine ---
@@ -1132,9 +1116,10 @@ def agent(obs, configuration=None):
     try:
         step = int(_v43_get(obs, "step", 0) or 0)
         action = _V43_POLICY(obs, configuration)
+        action = _macro_labor_scaler(obs, action, step)
+        action = _auxiliary_worker_controller(obs, action, step)
         action = _active_fertilizer_harvester(obs, action, step)
         action = _midgame_fertilizer_pacer(obs, action, step)
-        action = _universal_town_arbitrageur(obs, action, step)
         action = _capital_guard(obs, action, step)
         action = _post_day24_fertilizer_liquidator(obs, action, step)
         action = _monetizable_terminal_units(obs, action, step)

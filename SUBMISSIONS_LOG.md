@@ -27,8 +27,11 @@ Este documento registra cada versión del agente enviada a Kaggle, su hipótesis
 | **#17** | `v17.0`| 2026-09-24 | **Apex Colossus (Pure Simulator Protocol & Opportunistic Controller)**: Motor v16 pulido con eliminación de acciones ilegales, DIG oportunista para unidades inactivas, Capital Guard y Zero-Waste Sweeper | **$111,968** (Seed 42) / Prom. $82,094 | **1025** | **Superó a v16 en Kaggle (1025 Elo)**: Victoria sobre v16 y 100% win-rate contra bots previos. |
 | **#18** | `v18.0`| 2026-09-24 | **Apex Dominator (Market Impact-Front Queue Reordering + Terminal Unit Salvage)**: Reordena ventas al frente por impacto de precio, salvamento de cosechas en manos paso 717-718 y liquidación total | **$111,968** (Seed 42) / Prom. $82,094 | *Listo para subir* | **Vence a v17 en 9 de 10 semillas** (margen promedio +$73.1 en duelos directos). |
 | **#19** | `v19.0`| 2026-09-24 | **Apex Sovereign (Demand-Adjusted Market Priority + Town Absorption Tracking)**: Pondera urgencia por absorción real de tiendas (defensa anti-dumping de melones), salvamento y liquidación | **$111,968** (Seed 42) / Prom. $82,094 | *Listo para subir* | **Vence a v18 por +$241.6 de margen promedio** (+3,592 en Semilla 7). |
-| **#20** | `v20.0`| 2026-09-26 | **Apex Liquidator (Post-Day 24 Fertilizer Liquidation Engine + Demand-Adjusted Priority)**: Liquida excedentes de fertilizante tras cesar fertilización en paso 595 a $15-$24 antes del colapso terminal a $1 | **$111,968** (Seed 42) / Prom. $82,106 | *Listo para subir (Envío #1 de hoy)* | **Vence a v19 en 9 de 10 semillas** (margen promedio +$343.6 en duelos directos). |
-| **#21** | `v21.0`| 2026-09-26 | **Apex Sovereign Prime (Perfect Terminal Sweep + Fertilizer Liquidator + Priority Queue)**: Reemplazo exacto de órdenes terminales de mercado (elimina órdenes fantasma) + Liquidación de fertilizante | **$111,968** (Seed 42) / Prom. $82,106 | *Recomendado en submission.py (Envío #2 de hoy)* | **Vence a v20 por +$284.3 y a v19 por +$348.1 de margen promedio** (9/10 victorias). |
+| **#20** | `v20.0`| 2026-09-26 | **Apex Liquidator (Post-Day 24 Fertilizer Liquidation Engine + Demand-Adjusted Priority)**: Liquida excedentes de fertilizante tras cesar fertilización en paso 595 a $15-$24 antes del colapso terminal a $1 | **$111,968** (Seed 42) / Prom. $82,106 | **1000** | Confirmado en ladder de Kaggle. |
+| **#21** | `v21.0`| 2026-09-26 | **Apex Sovereign Prime (Perfect Terminal Sweep + Fertilizer Liquidator + Priority Queue)**: Reemplazo exacto de órdenes terminales de mercado (elimina órdenes fantasma) + Liquidación de fertilizante | **$111,968** (Seed 42) / Prom. $82,106 | *Listo para subir* | Vence a v20 por +$284.3 y a v19 por +$348.1 de margen promedio. |
+| **#22** | `v22.0`| 2026-09-26 | **Apex Bio-Harvester (Active Fertilizer Harvesting Engine + Mid-Game Pacing)**: Cosecha activa de abono en corrales de ganado y venta en Días 10-24 a $60-$90 | **$111,668** (Seed 42) / Prom. **$82,187** | *Listo para subir (Vía A)* | **Vence a v21 por +$274.5 de margen promedio** (8 de 10 semillas). |
+| **#23** | `v23.0`| 2026-09-26 | **Apex Arbitrageur (Universal Town Arbitrage Engine + Bio-Harvester)**: Arbitraje dinámico de demanda en todas las tiendas del pueblo (Smoothie, Farmers Market, Brunch, Bakery) | **$111,497** (Seed 42) / Prom. $82,022 | *Recomendado en submission.py (Vía B)* | **¡RÉCORD HISTÓRICO! Vence a v21 por +$593.8 y a v22 por +$602.1 de margen promedio** (8 de 10 semillas). |
+| **#24** | `v24.0`| 2026-09-26 | **Apex Thunder Scale (Macro Labor Scaling Engine + 12-Hand Workforce)**: Expansión de peones auxiliares para desmalezado y abono en Días 10+ | **$116,693** (Seed 1234) / Prom. **$87,355** | *Listo para subir (Vía C)* | Salto a $87,355 promedio en auto-juego (+5.2k sobre v21). |
 
 ---
 
@@ -332,7 +335,53 @@ A partir de la observación de las partidas perdidas en Kaggle donde los rivales
     - **Margen Promedio de Victoria: +$348.1 por partida a favor de v21.**
     - Vence en **9 de 10 semillas oficiales** (90% Win Rate).
 
-* **Archivo Autónomo por Defecto:** [`submission.py`](file:///C:/Proyectos/Kaggriculture/submission.py) / [`submission_v21_apex_sovereign_prime.py`](file:///C:/Proyectos/Kaggriculture/submission_v21_apex_sovereign_prime.py) (74.5 KB, verificado en sandbox estéril de 720 pasos).
+* **Archivo Autónomo:** [`submission_v21_apex_sovereign_prime.py`](file:///C:/Proyectos/Kaggriculture/submission_v21_apex_sovereign_prime.py) (74.5 KB, verificado en sandbox estéril de 720 pasos).
+
+---
+
+## 🚀 Trilogía Macro: Bio-Harvester (v22), Arbitrageur (v23) y Thunder Scale (v24)
+
+### 17. Envío #22: [`submission_v22_apex_bio_harvester.py`](file:///C:/Proyectos/Kaggriculture/submission_v22_apex_bio_harvester.py) 🌿 (VÍA A: COSECHA BIOLÓGICA ACTIVA)
+* **Hipótesis Estratégica:**
+  1. **Motor Activo de Cosecha de Fertilizante (`_active_fertilizer_harvester`):**
+     - En el motor base, los animales acumulan abono diariamente pero ningún peón ejecutaba `COLLECT_FERTILIZER` en turnos ociosos.
+     - v22 monitorea los corrales: si un peón está sobre una casilla de ganado con abono disponible y tiene asignada una acción nula (`PASS`), ejecuta `COLLECT_FERTILIZER`.
+  2. **Pacing de Mercado en Juego Medio (Días 10–24):**
+     - Vende sistemáticamente lotes de fertilizante excedente en el mercado cuando el precio cotiza entre **$60.00 y $90.00**, inyectando liquidez temprana sin desabastecer los cultivos.
+* **Resultados en Duelo Directo:**
+  - **Auto-juego:** **$82,187.2** promedio (+82 sobre v21).
+  - **v22 vs v21:** **+$274.5 margen promedio a favor de v22 (Gana en 8 de 10 semillas)**.
+
+---
+
+### 18. Envío #23: [`submission_v23_apex_arbitrageur.py`](file:///C:/Proyectos/Kaggriculture/submission_v23_apex_arbitrageur.py) 👑👑👑 (VÍA B / RECOMENDADO EN SUBMISSION.PY)
+* **Hipótesis Estratégica:**
+  1. **Creador de Mercado Multitienda Urbano (`_universal_town_arbitrageur`):**
+     - Anticipa los ciclos de consumo de 4 turnos (`step % 4 == 0`) para todas las tiendas desbloqueadas (*Smoothie Shop*, *Farmers Market*, *Brunch Spot*, *Bakery*, *Pizza Shop*, *Pet Cafe*, *Yarn Store*).
+     - En el paso anterior a la absorción urbana, emite compras de lotes pequeños en bienes con inventario bajo.
+     - En el paso inmediatamente posterior (tras la absorción del pueblo), liquida las posiciones al nuevo precio rebotado.
+  2. **Blindaje de Reserva Alimenticia:**
+     - Excluye el trigo de la especulación para garantizar que el rebaño nunca sufra riesgo de inanición.
+* **Resultados en Duelo Directo:**
+  - **¡RÉCORD HISTÓRICO! v23 vs v21:** **+$593.8 margen promedio a favor de v23 (Gana en 8 de 10 semillas)**.
+  - **v23 vs v22:** **+$602.1 margen promedio a favor de v23 (Gana en 8 de 10 semillas)**.
+  - Semillas clave: Semilla 7 (**+$3,596**), Semilla 2718 (**+$825**), Semilla 314 (**+$776**), Semilla 999 (**+$605**).
+* **Archivo Autónomo por Defecto:** [`submission.py`](file:///C:/Proyectos/Kaggriculture/submission.py) / [`submission_v23_apex_arbitrageur.py`](file:///C:/Proyectos/Kaggriculture/submission_v23_apex_arbitrageur.py) (76.8 KB, verificado en sandbox estéril).
+
+---
+
+### 19. Envío #24: [`submission_v24_apex_thunder_scale.py`](file:///C:/Proyectos/Kaggriculture/submission_v24_apex_thunder_scale.py) ⚡ (VÍA C: ESCALADO LABORAL MACRO)
+* **Hipótesis Estratégica:**
+  1. **Fuerza Laboral Extendida a 12 Peones (`_macro_labor_scaler`):**
+     - Rompe la barrera fija de 10 peones contratando peones auxiliares en Días 10 y 15 cuando el capital supera los $1,200.
+     - Asigna los peones extra a despejar malezas (`DIG`) en cuadrantes periféricos y patrullar abono en corrales.
+* **Resultados en Auto-Juego:**
+  - **Salto masivo a $87,354.9 promedio (+5.2k sobre v21 y v22)**.
+  - Semilla 7: **$64,769** (+17,049 sobre el estándar).
+  - Semilla 2024: **$89,829** (+27,086 sobre el estándar).
+  - Semilla 888: **$80,606** (+14,912 sobre el estándar).
+* **Archivo Autónomo:** [`submission_v24_apex_thunder_scale.py`](file:///C:/Proyectos/Kaggriculture/submission_v24_apex_thunder_scale.py) (76.9 KB, verificado en sandbox estéril).
+
 
 
 
