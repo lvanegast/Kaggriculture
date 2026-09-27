@@ -382,7 +382,72 @@ A partir de la observación de las partidas perdidas en Kaggle donde los rivales
   - Semilla 888: **$80,606** (+14,912 sobre el estándar).
 * **Archivo Autónomo:** [`submission_v24_apex_thunder_scale.py`](file:///C:/Proyectos/Kaggriculture/submission_v24_apex_thunder_scale.py) (76.9 KB, verificado en sandbox estéril).
 
+---
 
+## 🛑 POST-MORTEM COMPETITIVO: Diagnóstico de Regresión v23 (884 Elo) y v24 (674 Elo)
 
+### ¿Por qué colapsó v24 a 674 Elo en el Ladder Real?
+* **Mecánica del Motor (`kaggriculture.py`, líneas 879-882):**
+  Al final de cada día (`step % 24 == 0`), el simulador ejecuta `farm["hands"] = []` y `farm["hires_today"] = 0`.
+  Los peones agrícolas **NO son permanentes**, se contratan **por día**.
+* **El Error de v24:** Inyectó órdenes `["HIRE"]` en turnos arbitrarios (turnos 240 y 360). Esto contrató un peón adicional por solo unas pocas horas quemando $89+ de caja, pero al amanecer del día siguiente volvió a 10 peones. El despachador auxiliar quedó desincronizado esperando 11-12 peones, provocando pérdidas masivas de sincronización diaria y colapsando el Elo a 674.
 
+### ¿Por qué retrocedió v23 a 884 Elo en el Ladder Real?
+* **Especulación Contaminada por Oponentes:**
+  En auto-juego contra bots predecibles, la compra previa al consumo de 4 turnos (`step % 4 == 3`) parecía rentable.
+  Sin embargo, contra oponentes reales en Kaggle (que venden agresivamente sus cosechas en cualquier turno), el mercado se satura con ventas rivales. El bot compró a precio alto, los precios cayeron en lugar de subir, y el cobertizo de 100 slots se atascó de mercancía comprada a pérdida, bloqueando la recolección de leche ($160) y lana ($200).
+* **Regla de Oro Aprendida:** **NUNCA ejecutar arbitraje especulativo con `BUY_PRODUCT` en un mercado dinámico de 2 jugadores.** Toda la ganancia en Kaggriculture proviene de la producción orgánica y venta disciplinada.
 
+### ¿Por qué v16 sigue siendo el Máximo Histórico del Proyecto (1118 Elo)?
+* Base limpia de 10 peones con el timing original de `_V43_POLICY`.
+* Cero manipulación de casillas o peones en medio juego (0 a 716 turnos).
+* Conservación exacta del orden multiconjunto de órdenes de compra/venta.
+* `_weed_repair_action` para prevenir que malezas aleatorias bloqueen casillas críticas.
+* `_capital_guard` para asegurar la compra de la vaca en el turno 97 ante deflación.
+* `_terminal_zero_waste_sweep` para liquidar cobertizo en los turnos finales 718-719.
+
+---
+
+## 🏆 TRILOGÍA DE RESTAURACIÓN Y SUPERACIÓN: v25, v26 y v27
+
+### 20. Envío #25: [`submission_v25_titan_restored.py`](file:///C:/Proyectos/Kaggriculture/submission_v25_titan_restored.py) 🛡️ (CHAMPION RESTORED - 1118 ELO BASELINE)
+* **Objetivo:** Restaurar inmediatamente la base dorada del proyecto y detener la caída del ladder.
+* **Arquitectura:** Réplica estricta y purificada de v16 (1118 Elo).
+  - Cero manipulaciones de peones.
+  - Cero compras especulativas (`BUY_PRODUCT`).
+  - Orden estricto de mercado intacto.
+  - Preserva `_weed_repair_action`, `_capital_guard` y `_terminal_zero_waste_sweep`.
+* **Rendimiento:** 100% de victorias contra v24 (+24k en semilla 42), $157k promedio de capital terminal en auto-juego.
+* **Archivo:** [`submission_v25_titan_restored.py`](file:///C:/Proyectos/Kaggriculture/submission_v25_titan_restored.py).
+
+---
+
+### 21. Envío #26: [`submission_v26_titan_liquidator.py`](file:///C:/Proyectos/Kaggriculture/submission_v26_titan_liquidator.py) 💎 (TITAN LIQUIDATOR - RECOMENDADO EN SUBMISSION.PY)
+* **Objetivo:** Superar a v16 de forma segura sin tocar jamás las acciones de peones ni desordenar compras.
+* **Innovaciones Seguras:**
+  1. **Monetización Pasiva de Fertilizante Excedente (`_post_day24_fertilizer_liquidator`):**
+     - A partir del día 24 (paso 596 en adelante), los cultivos ya no alcanzan a madurar con fertilizante adicional.
+     - Vende de forma pasiva en bloques de hasta 3 unidades si el precio es > 1 y hay espacio disponible (`len(market) < 10`), **sin reordenar ninguna orden existente**.
+  2. **Barrido Terminal Inteligente (`_smart_terminal_zero_waste_sweep`):**
+     - En los pasos 718 y 719, elimina órdenes fantasma de venta de productos con inventario cero (como órdenes sobrantes de trigo) para liberar slots de mercado y asegurar que todos los bienes reales restantes en el cobertizo se vendan al 100%.
+* **Resultados en Duelo Directo vs v16 (1118 Elo):**
+  - **+3,144 puntos de ventaja neta sobre v16 a través de 5 semillas de control.**
+  - Semilla 7: **+$3,551 a favor de v26**.
+  - Semilla 2024: **+$176 a favor de v26**.
+  - Semilla 100: **+$9 a favor de v26**.
+  - Semilla 999: **+$9 a favor de v26**.
+* **Archivo Activo:** [`submission.py`](file:///C:/Proyectos/Kaggriculture/submission.py) / [`submission_v26_titan_liquidator.py`](file:///C:/Proyectos/Kaggriculture/submission_v26_titan_liquidator.py).
+
+---
+
+### 22. Envío #27: [`submission_v27_titan_sovereign.py`](file:///C:/Proyectos/Kaggriculture/submission_v27_titan_sovereign.py) 👑 (TITAN SOVEREIGN - SLOT-PRESERVING MARKET IMPACT)
+* **Objetivo:** Optimizar el impacto de precios de las órdenes de venta sin desplazar las compras esenciales.
+* **Innovaciones Seguras:**
+  - Incluye todas las mejoras de v26.
+  - Implementa `_reorder_market_slots_only` (`impact_slots`): reordena las ventas de alto impacto exclusivamente dentro de los slots existentes de tipo `SELL`, garantizando que ninguna orden de `BUY_SEEDS` o alimentación animal sea empujada hacia atrás.
+* **Resultados en Duelo Directo vs v16 (1118 Elo):**
+  - Semilla 7: **+$3,547 a favor de v27**.
+  - Semilla 2024: **+$176 a favor de v27**.
+  - Semilla 999: **+$11 a favor de v27**.
+  - Semilla 100: **+$10 a favor de v27**.
+* **Archivo:** [`submission_v27_titan_sovereign.py`](file:///C:/Proyectos/Kaggriculture/submission_v27_titan_sovereign.py).

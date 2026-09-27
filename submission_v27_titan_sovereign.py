@@ -822,6 +822,79 @@ def _capital_guard(obs, action, step):
     return action
 
 
+MARKET_PARAMS = {
+    "WHEAT": (25, 10000, 400, "sqrt", 0.8, "log", 0.2),
+    "CARROT": (35, 10000, 450, "hinge", 1.0, "sqrt", 0.7),
+    "TOMATO": (60, 10000, 200, "hinge", 0.4, "sqrt", 0.6),
+    "STRAWBERRY": (120, 10000, 100, "sqrt", 0.7, "linear", 1.6),
+    "MELON": (250, 10000, 300, "log", 0.2, "sq", 3.6),
+    "EGG": (50, 10000, 332, "hinge", 0.4, "log", 0.2),
+    "MILK": (160, 10000, 122, "sqrt", 0.6, "linear", 1.6),
+    "WOOL": (200, 10000, 105, "log", 0.2, "sq", 3.2),
+    "FERTILIZER": (100, 10000, 200, "linear", 0.4, "linear", 0.4),
+}
+
+def _shape(name: str, value: float, scale: float | None = None) -> float:
+    value = max(0.0, float(value))
+    if name == "linear":
+        return value
+    if name == "sq":
+        return value * value
+    if name == "sqrt":
+        import math; return math.sqrt(value)
+    if name == "log":
+        import math; return math.log1p(value)
+    if name == "hinge":
+        if scale is None or scale <= 0:
+            return value
+        normalized = value / scale
+        return normalized + 8.0 * max(0.0, normalized - 1.0) ** 2
+    return value
+
+def _market_price(item: str, inventory: int) -> int:
+    base, equilibrium, scale, below_func, below_target, above_func, above_target = MARKET_PARAMS[item]
+    if inventory < equilibrium:
+        amplitude = below_target * base / _shape(below_func, scale, scale)
+        price = base + amplitude * _shape(below_func, equilibrium - inventory, scale)
+    else:
+        amplitude = above_target * base / _shape(above_func, scale, scale)
+        price = base - amplitude * _shape(above_func, inventory - equilibrium, scale)
+    return max(1, int(round(price)))
+
+def _is_sell(order) -> bool:
+    return isinstance(order, (list, tuple)) and len(order) >= 3 and order[0] == "SELL" and order[1] in MARKET_PARAMS
+
+def _impact_score(obs, order) -> float:
+    if not _is_sell(order):
+        return float("-inf")
+    item = str(order[1])
+    try:
+        quantity = max(0, int(order[2]))
+    except (TypeError, ValueError):
+        return 0.0
+    market = obs.get("market", {}) or {}
+    inventory = market.get("inventory", {}) or {}
+    prices = market.get("prices", {}) or {}
+    current_inventory = int(inventory.get(item, 10000) or 0)
+    current_quote = float(prices.get(item, _market_price(item, current_inventory)) or 0)
+    later_quote = float(_market_price(item, current_inventory + quantity))
+    return float(quantity) * max(0.0, current_quote - later_quote)
+
+def _reorder_market_slots_only(obs, action):
+    market = list(action.get("market", []))
+    sell_rows = [
+        (_impact_score(obs, order), -index, order)
+        for index, order in enumerate(market)
+        if _is_sell(order)
+    ]
+    if len(sell_rows) < 2:
+        return action
+    sell_rows.sort(reverse=True)
+    ranked = [row[2] for row in sell_rows]
+    iterator = iter(ranked)
+    action["market"] = [next(iterator) if _is_sell(order) else order for order in market]
+    return action
+
 def _post_day24_fertilizer_liquidator(obs, action, step):
     if step < 596:
         return action
@@ -869,7 +942,10 @@ def agent(obs, configuration=None):
         action = _weed_repair_action(obs, action, step)
         action = _capital_guard(obs, action, step)
         action = _post_day24_fertilizer_liquidator(obs, action, step)
-        action = _smart_terminal_zero_waste_sweep(obs, action, step)
+        if step >= 718:
+            action = _smart_terminal_zero_waste_sweep(obs, action, step)
+        else:
+            action = _reorder_market_slots_only(obs, action)
         return _align_hands(action, obs)
     except Exception:
         farm = _farm_guard(obs, _seat_guard(obs))
