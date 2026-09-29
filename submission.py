@@ -821,45 +821,22 @@ def _capital_guard(obs, action, step):
             action['market'] = market
     return action
 
-
-def _post_day24_fertilizer_liquidator(obs, action, step):
-    if step < 596:
-        return action
-    private = obs.get("private", {}) if isinstance(obs, dict) else getattr(obs, "private", {})
-    shed = dict(private.get("shed", {}) if isinstance(private, dict) else {})
-    fert_count = int(shed.get("FERTILIZER", 0) or 0)
-    if fert_count <= 0:
-        return action
-    market = list(action.get("market", []))
-    for o in market:
-        if len(o) >= 3 and o[0] == "SELL" and o[1] == "FERTILIZER":
-            fert_count -= int(o[2])
-    if fert_count > 0 and len(market) < 10:
-        market.append(["SELL", "FERTILIZER", min(fert_count, 3)])
-        action["market"] = market
-    return action
-
-def _smart_terminal_zero_waste_sweep(obs, action, step):
+def _terminal_zero_waste_sweep(obs, action, step):
     if step >= 718:
-        private = obs.get("private", {}) if isinstance(obs, dict) else getattr(obs, "private", {})
-        shed = dict(private.get("shed", {}) if isinstance(private, dict) else {})
-        market = list(action.get("market", []))
+        private = obs.get('private', {}) if isinstance(obs, dict) else getattr(obs, 'private', {})
+        shed = dict(private.get('shed', {}) if isinstance(private, dict) else {})
+        market = list(action.get('market', []))
         
-        valid_market = []
         for o in market:
-            if len(o) >= 3 and o[0] == "SELL":
-                item = o[1]
-                if shed.get(item, 0) > 0:
-                    valid_market.append(o)
-                    shed[item] = max(0, shed[item] - int(o[2]))
-            else:
-                valid_market.append(o)
+            if len(o) >= 3 and o[0] == 'SELL' and o[1] in shed:
+                shed[o[1]] = max(0, shed[o[1]] - int(o[2]))
                 
         for p in _PRODUCTS_ORDER:
             rem = shed.get(p, 0)
-            if rem > 0 and len(valid_market) < 10:
-                valid_market.append(["SELL", p, rem])
-        action["market"] = valid_market
+            if rem > 0 and len(market) < 10:
+                market.append(['SELL', p, rem])
+                
+        action['market'] = market
     return action
 
 def agent(obs, configuration=None):
@@ -868,8 +845,7 @@ def agent(obs, configuration=None):
         action = _V43_POLICY(obs, configuration)
         action = _weed_repair_action(obs, action, step)
         action = _capital_guard(obs, action, step)
-        action = _post_day24_fertilizer_liquidator(obs, action, step)
-        action = _smart_terminal_zero_waste_sweep(obs, action, step)
+        action = _terminal_zero_waste_sweep(obs, action, step)
         return _align_hands(action, obs)
     except Exception:
         farm = _farm_guard(obs, _seat_guard(obs))
